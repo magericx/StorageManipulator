@@ -15,12 +15,12 @@
     <fragment
         android:id="@+id/internal_storage"
         android:name="com.magericx.storagemanipulator.ui.home.InternalStorageFragment"
-        android:label="@string/title_internal_storage"
+        android:label="@string/title_internal_storage_header"
         tools:layout="@layout/fragment_internal" />
 
     <fragment
         android:id="@+id/external_storage"
         android:name="com.magericx.storagemanipulator.ui.notifications.ExternalStorageFragment"
-        android:label="@string/title_external_storage"
+        android:label="@string/title_external_storage_header"
         tools:layout="@layout/fragment_external" />
 </navigation>

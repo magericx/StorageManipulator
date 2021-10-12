@@ -5,6 +5,15 @@
     <string name="title_notifications">Notifications</string>
     <string name="internal_storage">Internal</string>
     <string name="external_storage">External</string>
-    <string name="title_internal_storage">Internal storage</string>
-    <string name="title_external_storage">External storage</string>
+    <string name="title_internal_storage_header">Internal storage</string>
+    <string name="title_external_storage_header">External storage</string>
+    <string name="title_device_name">Device name : </string>
+    <string name="text_device_name">Redmi 9 </string>
+    <string name="title_manufacturer">Manufacturer : </string>
+    <string name="text_manufacturer">Xiaomi </string>
+    <string name="title_operating_system">Operating system : </string>
+    <string name="text_operating_system">OS 11</string>
+    <string name="text_internal_storage">55%</string>
+    <string name="title_internal_storage">"Internal storage : "</string>
+
 </resources>
