@@ -3,13 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_dashboard">
 
-    <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.magericx.storagemanipulator.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
@@ -18,8 +13,14 @@
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.magericx.storagemanipulator.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/internal_storage"
+        android:name="com.magericx.storagemanipulator.ui.home.InternalStorageFragment"
+        android:label="@string/title_internal_storage"
+        tools:layout="@layout/fragment_internal" />
+
+    <fragment
+        android:id="@+id/external_storage"
+        android:name="com.magericx.storagemanipulator.ui.notifications.ExternalStorageFragment"
+        android:label="@string/title_external_storage"
+        tools:layout="@layout/fragment_external" />
 </navigation>

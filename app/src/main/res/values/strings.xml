@@ -3,4 +3,8 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="internal_storage">Internal</string>
+    <string name="external_storage">External</string>
+    <string name="title_internal_storage">Internal storage</string>
+    <string name="title_external_storage">External storage</string>
 </resources>
