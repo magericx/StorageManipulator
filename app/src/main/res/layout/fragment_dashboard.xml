@@ -21,14 +21,20 @@
 
 
         <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".10" />
+
+        <TextView
             android:id="@+id/title_device_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".50"
-            android:gravity="end"
+            android:layout_weight=".40"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="start"
             android:text="@string/title_device_name"
             android:textColor="@color/white"
-            android:textSize="20sp"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -41,10 +47,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".50"
-            android:gravity="center"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="start"
             android:text="@string/text_device_name"
             android:textColor="@color/white"
-            android:textSize="20sp"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -66,14 +73,20 @@
         tools:layout_editor_absoluteX="0dp">
 
         <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".10" />
+
+        <TextView
             android:id="@+id/title_manufacturer_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".50"
-            android:gravity="end"
+            android:layout_weight=".40"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="start"
             android:text="@string/title_manufacturer"
             android:textColor="@color/white"
-            android:textSize="20sp"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -86,10 +99,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".50"
-            android:gravity="center"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="start"
             android:text="@string/text_manufacturer"
             android:textColor="@color/white"
-            android:textSize="20sp"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -111,14 +125,20 @@
         tools:layout_editor_absoluteX="0dp">
 
         <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".10" />
+
+        <TextView
             android:id="@+id/title_operating_system"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".50"
-            android:gravity="end"
+            android:layout_weight=".40"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="start"
             android:text="@string/title_operating_system"
             android:textColor="@color/white"
-            android:textSize="20sp"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -131,10 +151,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".50"
-            android:gravity="center"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="start"
             android:text="@string/text_operating_system"
             android:textColor="@color/white"
-            android:textSize="20sp"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -150,45 +171,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/operating_system_container"
         app:layout_constraintVertical_bias="0.04"
         tools:layout_editor_absoluteX="0dp">
 
-        <FrameLayout
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".70">
-
-            <ProgressBar
-                android:id="@+id/internal_storage_progressBar"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:progress="55" />
-
-            <TextView
-                android:id="@+id/text_internal_storage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="@string/text_internal_storage"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-        </FrameLayout>
+            android:layout_weight=".10" />
 
         <TextView
             android:id="@+id/title_internal_storage"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight=".30"
-            android:gravity="end"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="start"
             android:text="@string/title_internal_storage"
             android:textColor="@color/white"
-            android:textSize="20sp"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -196,17 +198,114 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.195" />
 
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".10" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".40"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.195">
+
+            <ProgressBar
+                android:id="@+id/internal_storage_progressBar"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:progress="55"
+                android:theme="@style/progressbar_theme" />
+
+            <TextView
+                android:id="@+id/text_internal_storage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:text="@string/text_internal_storage"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".10"
+            android:gravity="center" />
 
     </LinearLayout>
-    <!--    <ProgressBar-->
-    <!--        android:id="@+id/progressBar"-->
-    <!--        style="?android:attr/progressBarStyleHorizontal"-->
-    <!--        android:layout_width="260dp"-->
-    <!--        android:layout_height="20dp"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintHorizontal_bias="0.496"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        app:layout_constraintVertical_bias="0.832" />-->
+
+    <LinearLayout
+        android:id="@+id/external_storage_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/internal_storage_container"
+        app:layout_constraintVertical_bias="0.04"
+        tools:layout_editor_absoluteX="0dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".10" />
+
+        <TextView
+            android:id="@+id/title_external_storage"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".30"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="start"
+            android:text="@string/title_external_storage"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".10" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".40">
+
+            <ProgressBar
+                android:id="@+id/external_storage_progressBar"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:progress="50"
+                android:theme="@style/progressbar_theme" />
+
+            <TextView
+                android:id="@+id/text_external_storage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:text="@string/text_external_storage"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".10"
+            android:gravity="center" />
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

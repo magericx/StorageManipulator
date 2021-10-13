@@ -14,6 +14,8 @@
     <string name="title_operating_system">Operating system : </string>
     <string name="text_operating_system">OS 11</string>
     <string name="text_internal_storage">55%</string>
-    <string name="title_internal_storage">"Internal storage : "</string>
+    <string name="title_internal_storage">Internal storage : </string>
+    <string name="text_external_storage">50%</string>
+    <string name="title_external_storage">External storage: </string>
 
 </resources>
