@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/reply_blue_darker"
+    android:background="@color/fragment_background_color"
     tools:context=".ui.dashboard.DashboardFragment">
 
     <LinearLayout
@@ -33,7 +33,7 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="start"
             android:text="@string/title_device_name"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -50,7 +50,7 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="start"
             android:text="@string/text_device_name"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -85,7 +85,7 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="start"
             android:text="@string/title_manufacturer"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -102,7 +102,7 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="start"
             android:text="@string/text_manufacturer"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -137,7 +137,7 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="start"
             android:text="@string/title_operating_system"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -154,7 +154,7 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="start"
             android:text="@string/text_operating_system"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -189,7 +189,7 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="start"
             android:text="@string/title_internal_storage"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -231,7 +231,7 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="@string/text_internal_storage"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textSize="15sp" />
         </FrameLayout>
 
@@ -266,7 +266,7 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="start"
             android:text="@string/title_external_storage"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="15sp" />
 
         <TextView
@@ -296,7 +296,7 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="@string/text_external_storage"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textSize="15sp" />
 
         </FrameLayout>
