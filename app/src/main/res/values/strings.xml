@@ -17,5 +17,9 @@
     <string name="title_internal_storage">Internal storage : </string>
     <string name="text_external_storage">50%</string>
     <string name="title_external_storage">External storage: </string>
+    <string name="text_loading">Getting info … </string>
+    <string name="text_unknown">Unknown</string>
+    <string name="title_version_release">Version release:</string>
+    <string name="title_device_memory">Device memory (gb): </string>
 
 </resources>

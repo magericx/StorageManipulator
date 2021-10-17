@@ -13,19 +13,41 @@ import com.magericx.storagemanipulator.R
 class DashboardFragment : Fragment() {
 
     private lateinit var dashboardViewModel: DashboardViewModel
+    private lateinit var deviceName: TextView
+    private lateinit var manufacturer: TextView
+    private lateinit var operatingVersion: TextView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        dashboardViewModel =
+                ViewModelProvider(this).get(DashboardViewModel::class.java)
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        dashboardViewModel =
-                ViewModelProvider(this).get(DashboardViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_dashboard, container, false)
-//        val textView: TextView = root.findViewById(R.id.text_dashboard)
-//        dashboardViewModel.text.observe(viewLifecycleOwner, Observer {
-//            textView.text = it
-//        })
+        deviceName = root.findViewById(R.id.text_device_name)
+        manufacturer = root.findViewById(R.id.text_manufacturer_name)
+        operatingVersion = root.findViewById(R.id.text_operating_system)
         return root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setFirstScreenInfo()
+    }
+
+    private fun setFirstScreenInfo() {
+        dashboardViewModel.setFirstScreenInfo()
+        dashboardViewModel.deviceInfoObserver.observe(viewLifecycleOwner, { deviceInfo ->
+            deviceName.text = deviceInfo.deviceName
+            manufacturer.text = deviceInfo.manufacturer
+            operatingVersion.text = deviceInfo.operatingVersion
+        })
+    }
+
+
 }
