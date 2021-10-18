@@ -1,14 +1,19 @@
 package com.magericx.storagemanipulator.repository
 
 import android.os.Build
+import android.util.Log
+import com.magericx.storagemanipulator.utility.MemoryUtil
 import com.magericx.storagemanipulator.utility.StringUtil
 import java.util.*
 
+
 class DeviceInfoRepository {
 
-    companion object{
+    companion object {
         const val operatingSystem: String = "OS"
+        const val TAG = "DeviceInfoRepository"
     }
+
     fun getDeviceName(): String {
         val manufacturer: String = Build.MANUFACTURER
         val model: String = Build.MODEL
@@ -31,8 +36,21 @@ class DeviceInfoRepository {
         return Build.VERSION.RELEASE
     }
 
-    fun getDeviceMemorySize(): Long{
-        //TODO add implementation
-        return 0
+    fun getTotalDeviceMemorySize(): Long {
+        return try {
+            MemoryUtil.mi.totalMem / 0x100000L
+        } catch (e: Exception) {
+            Log.e(TAG, "Encountered error $e")
+            0
+        }
+    }
+
+    fun getAvailDeviceMemorySize(): Long {
+        return try {
+            MemoryUtil.mi.availMem / 0x100000L
+        } catch (e: Exception) {
+            Log.e(TAG, "Encountered error $e")
+            0
+        }
     }
 }

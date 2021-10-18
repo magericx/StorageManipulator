@@ -1,5 +1,6 @@
 package com.magericx.storagemanipulator.ui.dashboard
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,17 +15,23 @@ class DashboardViewModel : ViewModel() {
     private val dashboardHandler: DashboardHandler = DashboardHandler(deviceInfoRepository)
     private val poolThread = StorageManipulatorApplication.poolThread
     private val mainHandler = StorageManipulatorApplication.mainThreadHandler
-    
+
     private val _deviceInfo = MutableLiveData<DeviceInfo>()
 
     val deviceInfoObserver: LiveData<DeviceInfo> = _deviceInfo
 
+    companion object {
+        const val TAG = "DashboardViewModel"
+    }
+
     fun setFirstScreenInfo() {
         var firstScreenInfo: DeviceInfo?
+        Log.d(TAG, "Called information here")
         poolThread.submit {
             firstScreenInfo = dashboardHandler.getFirstScreenInfo()
             mainHandler.post {
                 _deviceInfo.apply {
+                    Log.d(TAG, "Callback observer here")
                     value = firstScreenInfo
                 }
             }

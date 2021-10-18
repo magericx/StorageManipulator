@@ -20,6 +20,7 @@
     <string name="text_loading">Getting info … </string>
     <string name="text_unknown">Unknown</string>
     <string name="title_version_release">Version release:</string>
-    <string name="title_device_memory">Device memory (gb): </string>
+    <string name="title_total_device_memory">Total device memory (mb): </string>
+    <string name="title_avail_device_memory">Available device memory (mb): </string>
 
 </resources>

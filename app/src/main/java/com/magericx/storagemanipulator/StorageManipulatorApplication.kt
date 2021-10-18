@@ -9,15 +9,20 @@ import java.util.concurrent.Executors
 
 class StorageManipulatorApplication: Application() {
     override fun onCreate() {
-        instance = this
         super.onCreate()
+        instance = this
+        poolThread = Executors.newFixedThreadPool(2)
+        mainThreadHandler = HandlerCompat.createAsync(Looper.getMainLooper())
     }
+
     companion object {
         const val TAG = "StorageManipulatorApplication"
         lateinit var instance: StorageManipulatorApplication
             private set
-        val poolThread: ExecutorService =  Executors.newFixedThreadPool(2)
-        val mainThreadHandler: Handler = HandlerCompat.createAsync(Looper.getMainLooper())
+        lateinit var poolThread: ExecutorService
+            private set
+        lateinit var mainThreadHandler: Handler
+            private set
     }
 
 }
