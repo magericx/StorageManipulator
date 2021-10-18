@@ -7,12 +7,14 @@ import androidx.lifecycle.ViewModel
 import com.magericx.storagemanipulator.StorageManipulatorApplication
 import com.magericx.storagemanipulator.handler.DashboardHandler
 import com.magericx.storagemanipulator.repository.DeviceInfoRepository
+import com.magericx.storagemanipulator.repository.InternalStorageRepository
 import com.magericx.storagemanipulator.ui.dashboard.model.DeviceInfo
 
 class DashboardViewModel : ViewModel() {
 
     private var deviceInfoRepository: DeviceInfoRepository = DeviceInfoRepository()
-    private val dashboardHandler: DashboardHandler = DashboardHandler(deviceInfoRepository)
+    private var internalStorageRepository: InternalStorageRepository = InternalStorageRepository()
+    private val dashboardHandler: DashboardHandler = DashboardHandler(deviceInfoRepository, internalStorageRepository)
     private val poolThread = StorageManipulatorApplication.poolThread
     private val mainHandler = StorageManipulatorApplication.mainThreadHandler
 
