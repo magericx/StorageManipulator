@@ -6,5 +6,7 @@ data class DeviceInfo(
         val operatingVersion: String,
         val totalMemory: Long,
         val availMemory: Long,
-        val releaseVersion: String
+        val releaseVersion: String,
+        val internalUtilizedCapacityPercent: Double,
+        val externalUtilizedCapacityPercent: Double
 )

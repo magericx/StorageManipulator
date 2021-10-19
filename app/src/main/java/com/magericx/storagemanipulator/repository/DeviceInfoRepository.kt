@@ -4,7 +4,7 @@ import android.os.Build
 import android.util.Log
 import com.magericx.storagemanipulator.utility.MemoryUtil
 import com.magericx.storagemanipulator.utility.StringUtil
-import java.util.*
+import java.util.Locale
 
 
 class DeviceInfoRepository {

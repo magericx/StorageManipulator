@@ -3,7 +3,7 @@ package com.magericx.storagemanipulator.utility
 
 object SizeUtil {
 
-    fun formatSizeDynamically(size: Long): String{
+    fun formatSizeDynamically(size: Long): String {
         var newSize = size
         var suffix: String? = null
 
@@ -28,7 +28,7 @@ object SizeUtil {
         return resultBuffer.toString()
     }
 
-    fun formatSizeKb(size: Long): Long{
+    fun formatSizeKb(size: Long): Long {
         var newSize = size
         if (newSize >= 1024) {
             newSize /= 1024
@@ -36,7 +36,7 @@ object SizeUtil {
         return newSize
     }
 
-    fun formatSizeMb(size: Long): Long{
+    fun formatSizeMb(size: Long): Long {
         var newSize = size
         if (newSize >= 1024) {
             newSize /= 1024
@@ -45,5 +45,9 @@ object SizeUtil {
             }
         }
         return newSize
+    }
+
+    fun roundTo1Decimal(value: Double): Double {
+        return String.format("%.1f", value).toDouble()
     }
 }

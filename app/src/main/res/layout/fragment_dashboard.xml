@@ -377,7 +377,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
-                android:progress="55"
                 android:theme="@style/progressbar_theme" />
 
             <TextView
@@ -387,7 +386,6 @@
                 android:layout_gravity="center"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="@string/text_internal_storage"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
         </FrameLayout>
