@@ -31,15 +31,17 @@ class DashboardViewModel : ViewModel() {
 
     fun setFirstScreenInfo() {
         var firstScreenInfo: DeviceInfo?
-        Log.d(TAG, "Called information here")
         poolThread.submit {
             firstScreenInfo = dashboardHandler.getFirstScreenInfo()
             mainHandler.post {
                 _deviceInfo.apply {
-                    Log.d(TAG, "Callback observer here")
                     value = firstScreenInfo
                 }
             }
         }
+    }
+
+    fun checkExternalAvailable(): Boolean {
+        return externalStorageRepository.checkExternalAvailable()
     }
 }

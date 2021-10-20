@@ -15,21 +15,13 @@ class ExternalStorageRepository : SizeRetrieval {
         const val TAG = "ExternalStorageRepository"
     }
 
-    private val externalDataDirectory1: File by lazy {
-        //return@lazy Environment.getExternalStorageDirectory()
-        return@lazy File(
-            StorageManipulatorApplication.instance.applicationContext.getExternalFilesDir(
-                "StorageManipulator"
-            )!!.path
+    private val externalDataDirectory: Array<File> =
+        StorageManipulatorApplication.instance.applicationContext.getExternalFilesDirs(
+            "StorageManipulator"
         )
-    }
 
-    //TODO fix logic for external storage
-    val externalDataDirectory = StorageManipulatorApplication.instance.applicationContext.getExternalFilesDirs(
-        "StorageManipulator"
-    )
     fun checkExternalAvailable(): Boolean {
-        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)
+        return externalDataDirectory.filterNotNull().size >= 2
     }
 
     override fun getTotalMaxCapacity(): Long {
@@ -37,8 +29,9 @@ class ExternalStorageRepository : SizeRetrieval {
             return 0
         }
         return try {
-            Log.d(TAG, "Test here ${externalDataDirectory[1].path}")
-            val stat = StatFs(externalDataDirectory[1].path)
+            val dataDirectory: File =
+                if (externalDataDirectory.filterNotNull().size >= 2) externalDataDirectory[1] else externalDataDirectory[0]
+            val stat = StatFs(dataDirectory.path)
             val blockSize: Long = stat.blockSizeLong
             val totalBlocks = stat.blockCountLong
             Log.d(TAG, "Retrieved getTotalMaxCapacity here ${totalBlocks * blockSize}")
@@ -54,7 +47,9 @@ class ExternalStorageRepository : SizeRetrieval {
             return 0
         }
         return try {
-            val stat = StatFs(externalDataDirectory[1].path)
+            val dataDirectory: File =
+                if (externalDataDirectory.filterNotNull().size > 1) externalDataDirectory[1] else externalDataDirectory[0]
+            val stat = StatFs(dataDirectory.path)
             val blockSize: Long = stat.blockSizeLong
             val totalBlocks = stat.availableBlocksLong
             Log.d(TAG, "Retrieved getAvailCapacity here ${totalBlocks * blockSize}")

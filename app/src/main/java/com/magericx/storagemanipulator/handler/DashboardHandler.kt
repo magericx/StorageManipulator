@@ -12,9 +12,6 @@ class DashboardHandler(
 ) {
 
     fun getFirstScreenInfo(): DeviceInfo {
-//        internalStorageRepository.getTotalMaxCapacity()
-//        internalStorageRepository.getAvailCapacity()
-//        internalStorageRepository.getAvailCapacityInPercent()
         return DeviceInfo(
             deviceName = deviceInfoRepository.getDeviceName(),
             manufacturer = deviceInfoRepository.getManufacturer(),

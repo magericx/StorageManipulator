@@ -22,5 +22,6 @@
     <string name="title_version_release">Version release:</string>
     <string name="title_total_device_memory">Total device memory (mb): </string>
     <string name="title_avail_device_memory">Available device memory (mb): </string>
+    <string name="external_not_mounted">"Please mount an external SD card to continue"</string>
 
 </resources>

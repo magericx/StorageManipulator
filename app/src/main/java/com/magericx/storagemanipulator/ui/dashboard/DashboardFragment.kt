@@ -8,12 +8,13 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.magericx.storagemanipulator.R
 
 class DashboardFragment : Fragment() {
 
-    private lateinit var dashboardViewModel: DashboardViewModel
+    private val dashboardViewModel: DashboardViewModel by activityViewModels()
     private lateinit var deviceName: TextView
     private lateinit var manufacturer: TextView
     private lateinit var operatingVersion: TextView
@@ -27,12 +28,6 @@ class DashboardFragment : Fragment() {
 
     companion object {
         const val TAG = "DashboardFragment"
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        dashboardViewModel =
-            ViewModelProvider(this).get(DashboardViewModel::class.java)
     }
 
     override fun onCreateView(
