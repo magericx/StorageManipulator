@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/reply_blue_darker"
-    tools:context=".ui.notifications.ExternalStorageFragment">
+    tools:context=".ui.external_storage.ExternalStorageFragment">
 
     <TextView
         android:id="@+id/text_notifications"

@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
+import java.lang.ref.WeakReference
 
-class NavControllerListener(private val listener: MainActivity.TabListener) : NavController.OnDestinationChangedListener {
+class NavControllerListener(private val listener: WeakReference<MainActivity.TabListener>) : NavController.OnDestinationChangedListener {
+    private val weakListener = listener.get()
     override fun onDestinationChanged(
         controller: NavController,
         destination: NavDestination,
@@ -13,7 +15,7 @@ class NavControllerListener(private val listener: MainActivity.TabListener) : Na
     ) {
         when (destination.label) {
             NavBarHeader.EXTERNAL_STORAGE.navBarName -> {
-                listener.updateResult()
+                weakListener?.updateResult()
             }
             else -> {
                 //do nothing here

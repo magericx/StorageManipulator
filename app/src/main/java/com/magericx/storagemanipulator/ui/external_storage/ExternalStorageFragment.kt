@@ -1,4 +1,4 @@
-package com.magericx.storagemanipulator.ui.notifications
+package com.magericx.storagemanipulator.ui.external_storage
 
 import android.os.Bundle
 import android.view.LayoutInflater

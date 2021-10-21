@@ -1,10 +1,8 @@
 package com.magericx.storagemanipulator.repository
 
-import android.icu.text.StringPrepParseException
 import android.os.Environment
 import android.os.StatFs
 import android.util.Log
-import com.magericx.storagemanipulator.utility.MemoryUtil
 import com.magericx.storagemanipulator.utility.SizeUtil
 import java.io.File
 

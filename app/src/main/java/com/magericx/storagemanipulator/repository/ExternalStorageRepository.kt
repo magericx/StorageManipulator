@@ -48,7 +48,7 @@ class ExternalStorageRepository : SizeRetrieval {
         }
         return try {
             val dataDirectory: File =
-                if (externalDataDirectory.filterNotNull().size > 1) externalDataDirectory[1] else externalDataDirectory[0]
+                if (externalDataDirectory.filterNotNull().size >= 2) externalDataDirectory[1] else externalDataDirectory[0]
             val stat = StatFs(dataDirectory.path)
             val blockSize: Long = stat.blockSizeLong
             val totalBlocks = stat.availableBlocksLong

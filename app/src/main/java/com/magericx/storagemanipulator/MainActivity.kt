@@ -11,11 +11,12 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.magericx.storagemanipulator.ui.dashboard.DashboardViewModel
 import com.magericx.storagemanipulator.utility.ToastHelper.toast
+import java.lang.ref.WeakReference
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
-    private var tabListener: TabListener? = null
+    private var tabListener: WeakReference<TabListener>? = null
     private var navListener: NavController.OnDestinationChangedListener? = null
     private val dashboardViewModel: DashboardViewModel by viewModels()
     val TAG = "MainActivity"
@@ -54,7 +55,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun addListeners() {
-        tabListener = TabListener()
+        tabListener = WeakReference(TabListener())
         navListener = NavControllerListener(tabListener!!)
         navListener?.let {
             navController.addOnDestinationChangedListener(it)
