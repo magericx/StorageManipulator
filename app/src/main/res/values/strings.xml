@@ -24,5 +24,15 @@
     <string name="title_avail_device_memory">Available device memory (mb): </string>
     <string name="external_not_mounted">"Please mount an external SD card to continue"</string>
     <string name="string_with_percent">%1$.1f%%</string>
+    <!--Button for generation-->
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="cancel">Cancel</string>
+    <!--Status for button-->
+    <string name="adding">Adding…</string>
+    <!--Size for generation of files-->
+    <string name="kilobytes">Kbs</string>
+    <string name="megabytes">Mbs</string>
+    <string name="gigabytes">Gbs</string>
 
 </resources>
