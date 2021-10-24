@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
             android:gravity="start"
-            android:text="Remaining: "
+            android:text="@string/remaining_size_status_label"
             android:textColor="@color/black"
             android:textSize="15sp" />
 
@@ -103,7 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="/" />
+            android:text="@string/string_with_divide" />
 
         <TextView
             android:id="@+id/title_total_internal_capacity"
@@ -111,9 +111,20 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
             android:gravity="start"
-            android:text="100000 KBs"
+            android:text="100000"
             android:textColor="@color/black"
             android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/title_statistics_progress_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="start"
+            android:text="@string/kilobytes_space"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
 
     </LinearLayout>
 
@@ -129,61 +140,15 @@
         app:layout_constraintVertical_bias="0.04"
         tools:layout_editor_absoluteX="0dp">
 
-        <!--        <TextView-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_weight=".10" />-->
-
-        <!--        <Button-->
-        <!--            android:id="@+id/size_kb_button"-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_weight="0.3"-->
-        <!--            android:backgroundTint="@color/reply_orange"-->
-        <!--            android:text="@string/kilobytes"-->
-        <!--            android:visibility="visible" />-->
-
-        <!--        <TextView-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_weight=".10" />-->
-
-        <!--        <Button-->
-        <!--            android:id="@+id/size_mb_button"-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_weight="0.3"-->
-        <!--            android:backgroundTint="@color/reply_orange"-->
-        <!--            android:text="@string/megabytes"-->
-        <!--            android:visibility="visible" />-->
-
-        <!--        <TextView-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_weight=".10" />-->
-
-        <!--        <Button-->
-        <!--            android:id="@+id/size_gb_button"-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_weight="0.3"-->
-        <!--            android:backgroundTint="@color/reply_orange"-->
-        <!--            android:text="@string/gigabytes"-->
-        <!--            android:visibility="visible" />-->
-
-        <!--        <TextView-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_weight=".10" />-->
         <RadioGroup
-            android:id="@+id/radioGroup"
+            android:id="@+id/unit_size_radioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checkedButton="@+id/radio_button_1"
+            android:checkedButton="@+id/radio_button_kb"
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/radio_button_1"
+                android:id="@+id/radio_button_kb"
                 style="@style/Widget.App.RadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -192,22 +157,22 @@
                 app:useMaterialThemeColors="false" />
 
             <RadioButton
-                android:id="@+id/radio_button_2"
+                android:id="@+id/radio_button_mb"
                 style="@style/Widget.App.RadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:minWidth="100dp"
                 android:text="@string/megabytes"
-                app:useMaterialThemeColors="false"/>
+                app:useMaterialThemeColors="false" />
 
             <RadioButton
-                android:id="@+id/radio_button_3"
+                android:id="@+id/radio_button_gb"
                 style="@style/Widget.App.RadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:minWidth="100dp"
                 android:text="@string/gigabytes"
-                app:useMaterialThemeColors="false"/>
+                app:useMaterialThemeColors="false" />
         </RadioGroup>
 
     </LinearLayout>
@@ -230,14 +195,14 @@
             android:layout_weight=".05" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/toggle_max_size"
+            style="@style/Widget.App.Switch"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.23"
             android:checked="false"
-            android:text="Max size"
-            app:useMaterialThemeColors="false"
-            style="@style/Widget.App.Switch"
-            />
+            android:text="@string/input_max_size_label"
+            app:useMaterialThemeColors="false" />
 
         <TextView
             android:layout_width="0dp"
@@ -245,18 +210,19 @@
             android:layout_weight=".03" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textField"
+            android:id="@+id/input_textSize_container"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
-            android:hint="Input size"
+            android:hint="@string/input_size_label"
             android:maxWidth="300dp"
             android:minWidth="250dp"
             app:endIconMode="clear_text"
             app:suffixText="KBs">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_textSize_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number" />
@@ -292,7 +258,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/reply_orange"
-            android:text="Generate file/s"
+            android:text="@string/file_generate_label"
             android:visibility="visible" />
 
         <TextView
@@ -305,7 +271,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/reply_orange"
-            android:text="Delete file/s"
+            android:text="@string/file_delete_label"
             android:visibility="visible" />
 
         <TextView

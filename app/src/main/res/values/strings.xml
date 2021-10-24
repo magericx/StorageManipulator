@@ -23,7 +23,9 @@
     <string name="title_total_device_memory">Total device memory (mb): </string>
     <string name="title_avail_device_memory">Available device memory (mb): </string>
     <string name="external_not_mounted">"Please mount an external SD card to continue"</string>
+    <!-- general labels-->
     <string name="string_with_percent">%1$.1f%%</string>
+    <string name="string_with_divide">/</string>
     <!--Button for generation-->
     <string name="pause">Pause</string>
     <string name="resume">Resume</string>
@@ -34,5 +36,23 @@
     <string name="kilobytes">Kbs</string>
     <string name="megabytes">Mbs</string>
     <string name="gigabytes">Gbs</string>
+    <!--Size with spaces-->
+    <string name="kilobytes_space">&#160;Kbs</string>
+    <string name="megabytes_space">&#160;Mbs</string>
+    <string name="gigabytes_space">&#160;Gbs</string>
+    <!--label for action buttons-->
+    <string name="file_delete_label">Delete file/s</string>
+    <string name="file_generate_label">Generate file/s</string>
+    <!--label for input edit textfields-->
+    <string name="input_size_label">Input size</string>
+    <string name="input_max_size_label">Max size</string>
+    <!--Status for size-->
+    <string name="remaining_size_status_label">Remaining:&#160;</string>
+
+
+
+
+
+
 
 </resources>
