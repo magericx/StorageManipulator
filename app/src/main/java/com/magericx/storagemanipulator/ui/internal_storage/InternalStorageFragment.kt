@@ -1,7 +1,6 @@
 package com.magericx.storagemanipulator.ui.internal_storage
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.magericx.storagemanipulator.R
+import java.lang.IllegalArgumentException
 import kotlin.math.roundToInt
 
 class InternalStorageFragment : Fragment() {
@@ -28,6 +28,9 @@ class InternalStorageFragment : Fragment() {
     private lateinit var textSizeInputField: TextInputEditText
     private lateinit var unitSizeRadioGroup: RadioGroup
     private lateinit var unitStatistics: TextView
+
+    private lateinit var availInternalCapacity: TextView
+    private lateinit var availTotalCapacity: TextView
 
     companion object {
         const val TAG = "InternalStorageFragment"
@@ -48,6 +51,8 @@ class InternalStorageFragment : Fragment() {
         textSizeInputField = root.findViewById(R.id.input_textSize_field)
         unitSizeRadioGroup = root.findViewById(R.id.unit_size_radioGroup)
         unitStatistics = root.findViewById(R.id.title_statistics_progress_unit)
+        availInternalCapacity = root.findViewById(R.id.title_avail_internal_capacity)
+        availTotalCapacity = root.findViewById(R.id.title_total_internal_capacity)
         return root
     }
 
@@ -58,11 +63,13 @@ class InternalStorageFragment : Fragment() {
     }
 
     private fun setFirstScreenInfo() {
-        internalViewModel.setFirstScreenInfo()
+        internalViewModel.getInternalStorageInfo(getSelectedUnit())
         internalViewModel.internalStorageInfoObserver.observe(viewLifecycleOwner, { internalInfo ->
             internalInfo.inUsedCapacityPercent.let {
                 progressBar.progress = it.roundToInt()
                 textProgress.text = getString(R.string.string_with_percent, it)
+                availInternalCapacity.text = internalInfo.availableStorage.toString()
+                availTotalCapacity.text = internalInfo.maximumStorage.toString()
             }
         })
     }
@@ -75,23 +82,30 @@ class InternalStorageFragment : Fragment() {
             textSizeInputField.isEnabled = !isChecked
         }
         unitSizeRadioGroup.setOnCheckedChangeListener { radioGroup, checkedId ->
-            unitStatistics.text.apply{
-                when (checkedId) {
-                    R.id.radio_button_kb -> {
-                        //"text"
-                        R.string.kilobytes_space
-                        Log.d(TAG, "Set kb here")
-                    }
-                    R.id.radio_button_mb -> {
-                        R.string.megabytes_space
-                        Log.d(TAG, "Set mb here")
-                    }
-                    R.id.radio_button_gb -> {
-                        R.string.gigabytes_space
-                        Log.d(TAG, "Set gb here")
-                    }
+            when (checkedId) {
+                R.id.radio_button_kb -> {
+                    unitStatistics.text = getString(R.string.kilobytes_space)
+                    internalViewModel.getInternalStorageInfo(UnitStatus.KB)
                 }
+                R.id.radio_button_mb -> {
+                    unitStatistics.text = getString(R.string.megabytes_space)
+                    internalViewModel.getInternalStorageInfo(UnitStatus.MB)
+                }
+                R.id.radio_button_gb -> {
+                    unitStatistics.text = getString(R.string.gigabytes_space)
+                    internalViewModel.getInternalStorageInfo(UnitStatus.GB)
+                }
+
             }
+        }
+    }
+
+    private fun getSelectedUnit(): UnitStatus {
+        return when (unitSizeRadioGroup.checkedRadioButtonId) {
+            R.id.radio_button_kb -> UnitStatus.KB
+            R.id.radio_button_mb -> UnitStatus.MB
+            R.id.radio_button_gb -> UnitStatus.GB
+            else -> throw IllegalArgumentException("Unsupported unit type")
         }
     }
 }

@@ -59,6 +59,8 @@ class InternalStorageRepository : SizeRetrieval {
     override fun getInusedCapacityInPercent(): Double {
         return SizeUtil.roundTo1Decimal(100.0 - getAvailCapacityInPercent())
     }
+
+
 }
 
 interface SizeRetrieval {

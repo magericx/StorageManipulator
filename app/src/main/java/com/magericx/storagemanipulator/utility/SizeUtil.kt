@@ -1,5 +1,7 @@
 package com.magericx.storagemanipulator.utility
 
+import com.magericx.storagemanipulator.ui.internal_storage.UnitStatus
+
 
 object SizeUtil {
 
@@ -28,26 +30,31 @@ object SizeUtil {
         return resultBuffer.toString()
     }
 
-    fun formatSizeKb(size: Long): Long {
-        var newSize = size
-        if (newSize >= 1024) {
-            newSize /= 1024
-        }
-        return newSize
+    fun formatSizeKb(size: Long): Double {
+        return (size / 1024).toDouble()
     }
 
-    fun formatSizeMb(size: Long): Long {
-        var newSize = size
-        if (newSize >= 1024) {
-            newSize /= 1024
-            if (newSize >= 1024) {
-                newSize /= 1024
-            }
-        }
-        return newSize
+    fun formatSizeMb(size: Long): Double {
+        return (size / 1024 / 1024).toDouble()
+    }
+
+    fun formatSizeGb(size: Long): Double {
+        return roundTo1Decimal(size.toDouble() / 1073741824.toDouble())
     }
 
     fun roundTo1Decimal(value: Double): Double {
         return String.format("%.1f", value).toDouble()
+    }
+
+    fun removeDecimalPoint(value: Double): Double {
+        return String.format("%.0f", value).toDouble()
+    }
+
+    fun getCapacityWithConversion(value: Long, unit: UnitStatus): Double {
+        return when (unit) {
+            UnitStatus.KB -> removeDecimalPoint(formatSizeKb(value))
+            UnitStatus.MB -> removeDecimalPoint(formatSizeMb(value))
+            UnitStatus.GB -> formatSizeGb(value)
+        }
     }
 }
