@@ -46,6 +46,7 @@
     <!--label for input edit textfields-->
     <string name="input_size_label">Input size</string>
     <string name="input_max_size_label">Max size</string>
+    <string name="file_size_error_message">Please input a valid file size</string>
     <!--Status for size-->
     <string name="remaining_size_status_label">Remaining:&#160;</string>
 

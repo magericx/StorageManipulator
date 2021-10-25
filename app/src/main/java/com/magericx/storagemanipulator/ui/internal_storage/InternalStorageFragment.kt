@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.RadioGroup
 import android.widget.TextView
@@ -14,6 +15,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.magericx.storagemanipulator.R
+import com.magericx.storagemanipulator.utility.ToastHelper.toast
 import java.lang.IllegalArgumentException
 import kotlin.math.roundToInt
 
@@ -31,6 +33,8 @@ class InternalStorageFragment : Fragment() {
 
     private lateinit var availInternalCapacity: TextView
     private lateinit var availTotalCapacity: TextView
+
+    private lateinit var generateFileButton: Button
 
     companion object {
         const val TAG = "InternalStorageFragment"
@@ -53,6 +57,7 @@ class InternalStorageFragment : Fragment() {
         unitStatistics = root.findViewById(R.id.title_statistics_progress_unit)
         availInternalCapacity = root.findViewById(R.id.title_avail_internal_capacity)
         availTotalCapacity = root.findViewById(R.id.title_total_internal_capacity)
+        generateFileButton = root.findViewById(R.id.generate_file_button)
         return root
     }
 
@@ -84,18 +89,38 @@ class InternalStorageFragment : Fragment() {
         unitSizeRadioGroup.setOnCheckedChangeListener { radioGroup, checkedId ->
             when (checkedId) {
                 R.id.radio_button_kb -> {
-                    unitStatistics.text = getString(R.string.kilobytes_space)
+                    getString(R.string.kilobytes_space).let{
+                        unitStatistics.text = it
+                        textSizeInputContainer.suffixText = it
+                    }
                     internalViewModel.getInternalStorageInfo(UnitStatus.KB)
                 }
                 R.id.radio_button_mb -> {
-                    unitStatistics.text = getString(R.string.megabytes_space)
+                    getString(R.string.megabytes_space).let{
+                        unitStatistics.text = it
+                        textSizeInputContainer.suffixText = it
+                    }
                     internalViewModel.getInternalStorageInfo(UnitStatus.MB)
                 }
                 R.id.radio_button_gb -> {
-                    unitStatistics.text = getString(R.string.gigabytes_space)
+                    getString(R.string.gigabytes_space).let{
+                        unitStatistics.text = it
+                        textSizeInputContainer.suffixText = it
+                    }
                     internalViewModel.getInternalStorageInfo(UnitStatus.GB)
                 }
 
+            }
+        }
+        generateFileButton.setOnClickListener {
+            if (textSizeInputField.text.isNullOrEmpty() && textSizeInputContainer.isEnabled){
+                activity?.toast(getString(R.string.file_size_error_message))
+                return@setOnClickListener
+            }
+            if (!textSizeInputContainer.isEnabled){
+                //generate full here
+            } else{
+                //generate files based on inputted file size
             }
         }
     }
