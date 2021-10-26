@@ -15,6 +15,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.magericx.storagemanipulator.R
+import com.magericx.storagemanipulator.databinding.FragmentInternalBinding
 import com.magericx.storagemanipulator.utility.ToastHelper.toast
 import java.lang.IllegalArgumentException
 import kotlin.math.roundToInt
@@ -23,18 +24,10 @@ class InternalStorageFragment : Fragment() {
 
     private val internalViewModel: InternalStorageViewModel by activityViewModels()
     private lateinit var internalStorageViewModel: InternalStorageViewModel
-    private lateinit var progressBar: ProgressBar
-    private lateinit var textProgress: TextView
-    private lateinit var maxSizeToggle: SwitchMaterial
-    private lateinit var textSizeInputContainer: TextInputLayout
-    private lateinit var textSizeInputField: TextInputEditText
-    private lateinit var unitSizeRadioGroup: RadioGroup
-    private lateinit var unitStatistics: TextView
 
-    private lateinit var availInternalCapacity: TextView
-    private lateinit var availTotalCapacity: TextView
+    private var _binding: FragmentInternalBinding? = null
+    private val binding get() = _binding!!
 
-    private lateinit var generateFileButton: Button
 
     companion object {
         const val TAG = "InternalStorageFragment"
@@ -44,21 +37,11 @@ class InternalStorageFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         internalStorageViewModel =
             ViewModelProvider(this).get(InternalStorageViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_internal, container, false)
-        progressBar = root.findViewById(R.id.progressBar)
-        textProgress = root.findViewById(R.id.text_progress)
-        maxSizeToggle = root.findViewById(R.id.toggle_max_size)
-        textSizeInputContainer = root.findViewById(R.id.input_textSize_container)
-        textSizeInputField = root.findViewById(R.id.input_textSize_field)
-        unitSizeRadioGroup = root.findViewById(R.id.unit_size_radioGroup)
-        unitStatistics = root.findViewById(R.id.title_statistics_progress_unit)
-        availInternalCapacity = root.findViewById(R.id.title_avail_internal_capacity)
-        availTotalCapacity = root.findViewById(R.id.title_total_internal_capacity)
-        generateFileButton = root.findViewById(R.id.generate_file_button)
-        return root
+        _binding = FragmentInternalBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,14 +50,19 @@ class InternalStorageFragment : Fragment() {
         setupListeners()
     }
 
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
+
     private fun setFirstScreenInfo() {
         internalViewModel.getInternalStorageInfo(getSelectedUnit())
         internalViewModel.internalStorageInfoObserver.observe(viewLifecycleOwner, { internalInfo ->
             internalInfo.inUsedCapacityPercent.let {
-                progressBar.progress = it.roundToInt()
-                textProgress.text = getString(R.string.string_with_percent, it)
-                availInternalCapacity.text = internalInfo.availableStorage.toString()
-                availTotalCapacity.text = internalInfo.maximumStorage.toString()
+                binding.progressBar.progress = it.roundToInt()
+                binding.textProgress.text = getString(R.string.string_with_percent, it)
+                binding.titleAvailInternalCapacity.text = internalInfo.availableStorage.toString()
+                binding.titleTotalInternalCapacity.text = internalInfo.maximumStorage.toString()
             }
         })
     }
@@ -82,51 +70,51 @@ class InternalStorageFragment : Fragment() {
     //setup listeners for internal page
     private fun setupListeners() {
         //listener for toggle
-        maxSizeToggle.setOnCheckedChangeListener { _, isChecked ->
-            textSizeInputContainer.isEnabled = !isChecked
-            textSizeInputField.isEnabled = !isChecked
+        binding.toggleMaxSize.setOnCheckedChangeListener { _, isChecked ->
+            binding.inputTextSizeContainer.isEnabled = !isChecked
+            binding.inputTextSizeField.isEnabled = !isChecked
         }
-        unitSizeRadioGroup.setOnCheckedChangeListener { radioGroup, checkedId ->
+        binding.unitSizeRadioGroup.setOnCheckedChangeListener { radioGroup, checkedId ->
             when (checkedId) {
                 R.id.radio_button_kb -> {
-                    getString(R.string.kilobytes_space).let{
-                        unitStatistics.text = it
-                        textSizeInputContainer.suffixText = it
+                    getString(R.string.kilobytes_space).let {
+                        binding.titleStatisticsProgressUnit.text = it
+                        binding.inputTextSizeContainer.suffixText = it
                     }
                     internalViewModel.getInternalStorageInfo(UnitStatus.KB)
                 }
                 R.id.radio_button_mb -> {
-                    getString(R.string.megabytes_space).let{
-                        unitStatistics.text = it
-                        textSizeInputContainer.suffixText = it
+                    getString(R.string.megabytes_space).let {
+                        binding.titleStatisticsProgressUnit.text = it
+                        binding.inputTextSizeContainer.suffixText = it
                     }
                     internalViewModel.getInternalStorageInfo(UnitStatus.MB)
                 }
                 R.id.radio_button_gb -> {
-                    getString(R.string.gigabytes_space).let{
-                        unitStatistics.text = it
-                        textSizeInputContainer.suffixText = it
+                    getString(R.string.gigabytes_space).let {
+                        binding.titleStatisticsProgressUnit.text = it
+                        binding.inputTextSizeContainer.suffixText = it
                     }
                     internalViewModel.getInternalStorageInfo(UnitStatus.GB)
                 }
 
             }
         }
-        generateFileButton.setOnClickListener {
-            if (textSizeInputField.text.isNullOrEmpty() && textSizeInputContainer.isEnabled){
+        binding.generateFileButton.setOnClickListener {
+            if (binding.inputTextSizeField.text.isNullOrEmpty() && binding.inputTextSizeContainer.isEnabled) {
                 activity?.toast(getString(R.string.file_size_error_message))
                 return@setOnClickListener
             }
-            if (!textSizeInputContainer.isEnabled){
-                //generate full here
-            } else{
+            if (!binding.inputTextSizeContainer.isEnabled) {
+                internalViewModel.generateFiles(max = true)
+            } else {
                 //generate files based on inputted file size
             }
         }
     }
 
     private fun getSelectedUnit(): UnitStatus {
-        return when (unitSizeRadioGroup.checkedRadioButtonId) {
+        return when (binding.unitSizeRadioGroup.checkedRadioButtonId) {
             R.id.radio_button_kb -> UnitStatus.KB
             R.id.radio_button_mb -> UnitStatus.MB
             R.id.radio_button_gb -> UnitStatus.GB

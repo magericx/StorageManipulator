@@ -3,7 +3,12 @@ package com.magericx.storagemanipulator.repository
 import android.os.Environment
 import android.os.StatFs
 import android.util.Log
+import com.magericx.storagemanipulator.utility.FileIoUtil
 import com.magericx.storagemanipulator.utility.SizeUtil
+import com.magericx.storagemanipulator.utility.StringUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runInterruptible
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class InternalStorageRepository : SizeRetrieval {
@@ -11,6 +16,8 @@ class InternalStorageRepository : SizeRetrieval {
     companion object {
         const val TAG = "InternalStorageRepository"
     }
+
+    private val fileHelper = FileIoUtil()
 
     private val dataDirectory: File by lazy {
         return@lazy Environment.getDataDirectory()
@@ -60,7 +67,13 @@ class InternalStorageRepository : SizeRetrieval {
         return SizeUtil.roundTo1Decimal(100.0 - getAvailCapacityInPercent())
     }
 
-
+    override suspend fun writeIntoFiles(size:Long){
+        return withContext(Dispatchers.IO) {
+            runInterruptible {
+                fileHelper.writeToInternalFile(size)
+            }
+        }
+    }
 }
 
 interface SizeRetrieval {
@@ -68,4 +81,5 @@ interface SizeRetrieval {
     fun getAvailCapacity(): Long
     fun getAvailCapacityInPercent(): Double
     fun getInusedCapacityInPercent(): Double
+    suspend fun writeIntoFiles(size:Long)
 }

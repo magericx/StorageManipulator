@@ -70,4 +70,9 @@ class ExternalStorageRepository : SizeRetrieval {
     override fun getInusedCapacityInPercent(): Double {
         return SizeUtil.roundTo1Decimal(100.0 - getAvailCapacityInPercent())
     }
+
+    override suspend fun writeIntoFiles(size: Long) {
+        TODO("Not yet implemented")
+    }
+
 }
