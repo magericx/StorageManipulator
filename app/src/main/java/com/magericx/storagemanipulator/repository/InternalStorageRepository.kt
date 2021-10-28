@@ -3,6 +3,7 @@ package com.magericx.storagemanipulator.repository
 import android.os.Environment
 import android.os.StatFs
 import android.util.Log
+import com.magericx.storagemanipulator.ui.internal_storage.ProgressListener
 import com.magericx.storagemanipulator.utility.FileIoUtil
 import com.magericx.storagemanipulator.utility.SizeUtil
 import com.magericx.storagemanipulator.utility.StringUtil
@@ -67,10 +68,10 @@ class InternalStorageRepository : SizeRetrieval {
         return SizeUtil.roundTo1Decimal(100.0 - getAvailCapacityInPercent())
     }
 
-    override suspend fun writeIntoFiles(size:Long){
+    override suspend fun writeIntoFiles(size: Long, progressListener: ProgressListener) {
         return withContext(Dispatchers.IO) {
             runInterruptible {
-                fileHelper.writeToInternalFile(size)
+                fileHelper.writeToInternalFile(size, progressListener)
             }
         }
     }
@@ -81,5 +82,5 @@ interface SizeRetrieval {
     fun getAvailCapacity(): Long
     fun getAvailCapacityInPercent(): Double
     fun getInusedCapacityInPercent(): Double
-    suspend fun writeIntoFiles(size:Long)
+    suspend fun writeIntoFiles(size: Long, progressListener: ProgressListener)
 }

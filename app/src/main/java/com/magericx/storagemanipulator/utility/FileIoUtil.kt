@@ -2,9 +2,11 @@ package com.magericx.storagemanipulator.utility
 
 import android.util.Log
 import com.magericx.storagemanipulator.StorageManipulatorApplication
+import com.magericx.storagemanipulator.ui.internal_storage.ProgressListener
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
+import java.io.IOException
 
 class FileIoUtil {
 
@@ -17,26 +19,37 @@ class FileIoUtil {
     private val internalPause = false
     private val jobQueue: MutableList<StringBuilder> = mutableListOf()
 
-    fun writeToInternalFile(sizeToGenerate: Long) {
+    fun writeToInternalFile(sizeToGenerate: Long, progressListener: ProgressListener) {
         var totalGenerateSize = sizeToGenerate
         val directory = getDirectory(isInternalDir = true)
+        val randomString = StringUtil.generateRandomString()
+        var testProgress = 0
         while (true) {
-            Log.d(TAG,"Size here is ${sizeToGenerate}")
+            Log.d(TAG, "Size here is ${sizeToGenerate}")
             //nothing more to generate
             if (totalGenerateSize <= 0) break
             if (jobQueue.size <= 10) {
-                jobQueue.add(StringUtil.generateRandomString())
+                jobQueue.add(randomString)
                 continue
             }
             //create new file if current file exceed sizeOfEachFileBytes
-            val fileToFill =
-                if (getLastFileInDirectory(directory).length() < sizeOfEachFileBytes) getLastFileInDirectory(
-                    directory
-                ) else getFile(
-                    directory,
-                    StringUtil.getNextFileName(getLastFileInDirectory(directory))
-                )
-            totalGenerateSize -= writeIntoFile(fileToFill)
+            try {
+                val fileToFill =
+                    if (getLastFileInDirectory(directory).length() < sizeOfEachFileBytes) getLastFileInDirectory(
+                        directory
+                    ) else getFile(
+                        directory,
+                        StringUtil.getNextFileName(getLastFileInDirectory(directory))
+                    )
+                totalGenerateSize -= writeIntoFile(fileToFill)
+                //todo update callback to weakreference and link to observer
+                progressListener.updateProgress(testProgress)
+                //test
+                testProgress += 5
+            } catch (e: Exception) {
+                Log.e(TAG, "Encountered exception here $e")
+                break
+            }
         }
     }
 
@@ -49,7 +62,7 @@ class FileIoUtil {
                 "StorageManipulator"
             )[1]
         }
-        if (!rootFile.exists()){
+        if (!rootFile.exists()) {
             rootFile.mkdir()
         }
         return rootFile
@@ -69,20 +82,21 @@ class FileIoUtil {
     }
 
     private fun writeIntoFile(file: File): Long {
-        //Log.d(TAG, "Writing into file $file")
+        //return in bytes
         val sizeBefore = file.length()
-//        try{
-            val fileWriter = BufferedWriter(FileWriter(file, true))
+        val fileWriter = BufferedWriter(FileWriter(file, true))
+        try {
             jobQueue.forEach {
                 fileWriter.append(it.toString())
-                //Log.d(TAG, "Writing ${it} here")
             }
             jobQueue.clear()
             fileWriter.flush()
             Log.d(TAG, "Size before is ${sizeBefore} and after is ${file.length()}")
-//        }catch(e:Exception){
-//            Log.e(TAG,"Exception here $e")
-//        }
+        } catch (e: IOException) {
+            Log.e(TAG, "Exception here $e")
+        } finally {
+            fileWriter.close()
+        }
         return file.length() - sizeBefore
 
     }

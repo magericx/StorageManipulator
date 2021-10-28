@@ -1,23 +1,18 @@
 package com.magericx.storagemanipulator.ui.internal_storage
 
 import android.os.Bundle
+import android.text.InputType
+import android.text.method.DigitsKeyListener
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.RadioGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.switchmaterial.SwitchMaterial
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.magericx.storagemanipulator.R
 import com.magericx.storagemanipulator.databinding.FragmentInternalBinding
 import com.magericx.storagemanipulator.utility.ToastHelper.toast
-import java.lang.IllegalArgumentException
 import kotlin.math.roundToInt
 
 class InternalStorageFragment : Fragment() {
@@ -57,6 +52,7 @@ class InternalStorageFragment : Fragment() {
 
     private fun setFirstScreenInfo() {
         internalViewModel.getInternalStorageInfo(getSelectedUnit())
+        //to update UI according to current info for device
         internalViewModel.internalStorageInfoObserver.observe(viewLifecycleOwner, { internalInfo ->
             internalInfo.inUsedCapacityPercent.let {
                 binding.progressBar.progress = it.roundToInt()
@@ -65,6 +61,19 @@ class InternalStorageFragment : Fragment() {
                 binding.titleTotalInternalCapacity.text = internalInfo.maximumStorage.toString()
             }
         })
+        //to update UI according to generation status
+        internalViewModel.generateFilesInfoObserver.observe(viewLifecycleOwner,
+            { generateFileInfo ->
+                generateFileInfo.status?.let { status ->
+                    if (status == GenerateStatus.INPROGRESS){
+                        //update progressbar and return here
+                    }
+                    activity?.toast(status.status)
+                    if (status == GenerateStatus.COMPLETED) {
+                        internalViewModel.refreshAll(getSelectedUnit())
+                    }
+                }
+            })
     }
 
     //setup listeners for internal page
@@ -97,7 +106,6 @@ class InternalStorageFragment : Fragment() {
                     }
                     internalViewModel.getInternalStorageInfo(UnitStatus.GB)
                 }
-
             }
         }
         binding.generateFileButton.setOnClickListener {
@@ -108,7 +116,8 @@ class InternalStorageFragment : Fragment() {
             if (!binding.inputTextSizeContainer.isEnabled) {
                 internalViewModel.generateFiles(max = true)
             } else {
-                //generate files based on inputted file size
+                val retrievedSize = binding.inputTextSizeField.text.toString().toDouble()
+                internalViewModel.generateFiles(size = retrievedSize, unit = getSelectedUnit())
             }
         }
     }

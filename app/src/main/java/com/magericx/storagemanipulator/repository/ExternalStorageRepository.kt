@@ -5,6 +5,7 @@ import android.os.StatFs
 import android.util.Log
 import androidx.core.content.ContextCompat.getExternalFilesDirs
 import com.magericx.storagemanipulator.StorageManipulatorApplication
+import com.magericx.storagemanipulator.ui.internal_storage.ProgressListener
 import com.magericx.storagemanipulator.utility.SizeUtil
 import java.io.File
 
@@ -71,7 +72,7 @@ class ExternalStorageRepository : SizeRetrieval {
         return SizeUtil.roundTo1Decimal(100.0 - getAvailCapacityInPercent())
     }
 
-    override suspend fun writeIntoFiles(size: Long) {
+    override suspend fun writeIntoFiles(size: Long, progressListener: ProgressListener) {
         TODO("Not yet implemented")
     }
 

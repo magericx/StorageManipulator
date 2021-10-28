@@ -47,8 +47,12 @@
     <string name="input_size_label">Input size</string>
     <string name="input_max_size_label">Max size</string>
     <string name="file_size_error_message">Please input a valid file size</string>
+    <string name="job_running_error_message">Job already started</string>
+    <string name="insufficient_mem_error_message">Insufficient storage to proceed</string>
     <!--Status for size-->
     <string name="remaining_size_status_label">Remaining:&#160;</string>
+    <!-- Message for generation -->
+    <string name="work_in_progress">Started generation</string>
 
 
 
