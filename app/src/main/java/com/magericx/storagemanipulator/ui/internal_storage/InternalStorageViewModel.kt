@@ -11,6 +11,7 @@ import com.magericx.storagemanipulator.ui.internal_storage.model.InternalStorage
 import com.magericx.storagemanipulator.utility.SizeUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 
 class InternalStorageViewModel : ViewModel() {
 
@@ -25,6 +26,8 @@ class InternalStorageViewModel : ViewModel() {
     //observer for generation status
     private val _generateFilesInfo = MutableLiveData<GenerateFilesInfo>()
     val generateFilesInfoObserver: LiveData<GenerateFilesInfo> = _generateFilesInfo
+    private val weakProgressCallback: WeakReference<ProgressListener>
+        get() = WeakReference(progressCallback)
 
 
     fun getInternalStorageInfo(unit: UnitStatus) {
@@ -71,21 +74,26 @@ class InternalStorageViewModel : ViewModel() {
                 ) return@launch
                 Log.d(TAG, "Started job here")
                 isJobRunning = true
-                if (max) {
-                    internalRepository.writeIntoFiles(internalRepository.getAvailCapacity(),progressCallback)
+                val bytesToGenerate = if (max) {
+                    internalRepository.getAvailCapacity()
                 } else {
-                    val bytesToGenerate = SizeUtil.getCapacityToBytes(size, unit)
-                    internalRepository.writeIntoFiles(bytesToGenerate,progressCallback)
+                    SizeUtil.getCapacityToBytes(size, unit)
                 }
-                println("Finished here")
-                _generateFilesInfo.value = GenerateFilesInfo(
-                    status = GenerateStatus.COMPLETED
+                internalRepository.writeIntoFiles(
+                    bytesToGenerate,
+                    weakProgressCallback
                 )
-                isJobRunning = false
+                Log.d(TAG, "Finished here")
+//                _generateFilesInfo.value = GenerateFilesInfo(
+//                    status = GenerateStatus.COMPLETED
+//                )
             } catch (e: Exception) {
+                Log.d(TAG, "Failed due to ${e}")
                 _generateFilesInfo.value = GenerateFilesInfo(
                     status = GenerateStatus.UNKNOWN
                 )
+            } finally {
+                isJobRunning = false
             }
 
         }
@@ -98,11 +106,23 @@ class InternalStorageViewModel : ViewModel() {
         getInternalStorageInfo(unit)
     }
 
-    //callback
-    val progressCallback: ProgressListener = object: ProgressListener{
-        override fun updateProgress(progress: Int) {
-            //TODO update observer whenever callback is received
-            Log.d(TAG,"Updating progress of $progress")
+    //callback to update progress status
+    private val progressCallback: ProgressListener = object : ProgressListener {
+        override fun updateProgress(
+            progress: Double,
+            addProgressInfo: AddProgressInfo
+        ) {
+            Log.d(TAG, "Updating progress of $progress")
+            val currentStatus: GenerateStatus = if (progress >= 100.0) GenerateStatus.COMPLETED else
+                GenerateStatus.INPROGRESS
+            mainHandler.post {
+                _generateFilesInfo.value =
+                    GenerateFilesInfo(
+                        status = currentStatus,
+                        progressStatus = progress,
+                        addProgressInfo = addProgressInfo
+                    )
+            }
         }
     }
 }
@@ -122,8 +142,16 @@ enum class GenerateStatus(val status: String) {
 data class GenerateFilesInfo(
     val status: GenerateStatus? = null,
     val progressStatus: Double? = null,
+    val addProgressInfo: AddProgressInfo? = null
 )
 
+
+//classes for updating generating progress
 interface ProgressListener {
-    fun updateProgress(progress: Int)
+    fun updateProgress(progress: Double = 0.0, addProgressInfo: AddProgressInfo)
 }
+
+data class AddProgressInfo(
+    val addedSize: Long = 0,
+    val totalGenerateSize: Long
+)

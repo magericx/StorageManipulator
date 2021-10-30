@@ -8,6 +8,7 @@ import com.magericx.storagemanipulator.StorageManipulatorApplication
 import com.magericx.storagemanipulator.ui.internal_storage.ProgressListener
 import com.magericx.storagemanipulator.utility.SizeUtil
 import java.io.File
+import java.lang.ref.WeakReference
 
 
 class ExternalStorageRepository : SizeRetrieval {
@@ -72,7 +73,7 @@ class ExternalStorageRepository : SizeRetrieval {
         return SizeUtil.roundTo1Decimal(100.0 - getAvailCapacityInPercent())
     }
 
-    override suspend fun writeIntoFiles(size: Long, progressListener: ProgressListener) {
+    override suspend fun writeIntoFiles(size: Long, progressListener: WeakReference<ProgressListener>) {
         TODO("Not yet implemented")
     }
 

@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.lang.ref.WeakReference
 
 class InternalStorageRepository : SizeRetrieval {
 
@@ -68,7 +69,7 @@ class InternalStorageRepository : SizeRetrieval {
         return SizeUtil.roundTo1Decimal(100.0 - getAvailCapacityInPercent())
     }
 
-    override suspend fun writeIntoFiles(size: Long, progressListener: ProgressListener) {
+    override suspend fun writeIntoFiles(size: Long, progressListener: WeakReference<ProgressListener>) {
         return withContext(Dispatchers.IO) {
             runInterruptible {
                 fileHelper.writeToInternalFile(size, progressListener)
@@ -82,5 +83,5 @@ interface SizeRetrieval {
     fun getAvailCapacity(): Long
     fun getAvailCapacityInPercent(): Double
     fun getInusedCapacityInPercent(): Double
-    suspend fun writeIntoFiles(size: Long, progressListener: ProgressListener)
+    suspend fun writeIntoFiles(size: Long, progressListener: WeakReference<ProgressListener>)
 }

@@ -2,11 +2,13 @@ package com.magericx.storagemanipulator.utility
 
 import android.util.Log
 import com.magericx.storagemanipulator.StorageManipulatorApplication
+import com.magericx.storagemanipulator.ui.internal_storage.AddProgressInfo
 import com.magericx.storagemanipulator.ui.internal_storage.ProgressListener
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
+import java.lang.ref.WeakReference
 
 class FileIoUtil {
 
@@ -14,16 +16,23 @@ class FileIoUtil {
         private const val internalStorage = "storage_manipulator_files"
         private const val sizeOfEachFileBytes = 500 * 1024 * 1024 //converted from MB to bytes
         private const val TAG = "FileIoUtil"
+        private const val maxPercent: Double = 100.0
     }
 
     private val internalPause = false
     private val jobQueue: MutableList<StringBuilder> = mutableListOf()
 
-    fun writeToInternalFile(sizeToGenerate: Long, progressListener: ProgressListener) {
+    fun writeToInternalFile(
+        sizeToGenerate: Long,
+        progressListener: WeakReference<ProgressListener>
+    ) {
         var totalGenerateSize = sizeToGenerate
         val directory = getDirectory(isInternalDir = true)
         val randomString = StringUtil.generateRandomString()
         var testProgress = 0
+        val listener = progressListener.get()
+        //first callback here to set the starting mark
+        listener?.updateProgress(addProgressInfo = AddProgressInfo(totalGenerateSize = sizeToGenerate))
         while (true) {
             Log.d(TAG, "Size here is ${sizeToGenerate}")
             //nothing more to generate
@@ -41,13 +50,20 @@ class FileIoUtil {
                         directory,
                         StringUtil.getNextFileName(getLastFileInDirectory(directory))
                     )
-                totalGenerateSize -= writeIntoFile(fileToFill)
-                //todo update callback to weakreference and link to observer
-                progressListener.updateProgress(testProgress)
-                //test
-                testProgress += 5
+                writeIntoFile(fileToFill).let {
+                    totalGenerateSize -= it
+                }
+                updateProgressPercent(totalGenerateSize, sizeToGenerate, listener)
             } catch (e: Exception) {
                 Log.e(TAG, "Encountered exception here $e")
+                listener?.updateProgress(
+                    progress = maxPercent,
+                    addProgressInfo = AddProgressInfo(
+                        addedSize = sizeToGenerate,
+                        totalGenerateSize = sizeToGenerate
+                    )
+
+                )
                 break
             }
         }
@@ -98,6 +114,30 @@ class FileIoUtil {
             fileWriter.close()
         }
         return file.length() - sizeBefore
+    }
 
+    //get remaining to be added percentage first, deduct by 100 to get added percentage
+    private fun updateProgressPercent(
+        addedSize: Long,
+        totalGenerateSize: Long,
+        listener: ProgressListener?
+    ) {
+        val generatedSize = totalGenerateSize - addedSize
+        SizeUtil.getPercentage(addedSize, totalGenerateSize).let {
+            val addedPercent = SizeUtil.roundTo1Decimal(maxPercent - it)
+            if (addedPercent >= maxPercent) listener?.updateProgress(
+                progress = maxPercent,
+                addProgressInfo = AddProgressInfo(
+                    addedSize = totalGenerateSize,
+                    totalGenerateSize = totalGenerateSize
+                )
+            ) else listener?.updateProgress(
+                progress = addedPercent,
+                addProgressInfo = AddProgressInfo(
+                    addedSize = generatedSize,
+                    totalGenerateSize = totalGenerateSize
+                )
+            )
+        }
     }
 }

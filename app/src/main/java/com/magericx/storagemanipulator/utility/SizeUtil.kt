@@ -1,9 +1,11 @@
 package com.magericx.storagemanipulator.utility
 
+import android.util.Log
 import com.magericx.storagemanipulator.ui.internal_storage.UnitStatus
 
 
 object SizeUtil {
+    const val TAG = "SizeUtil"
 
     fun formatSizeDynamically(size: Long): String {
         var newSize = size
@@ -80,5 +82,10 @@ object SizeUtil {
             UnitStatus.MB -> formatMbToBytes(size).toLong()
             UnitStatus.GB -> formatGbToBytes(size).toLong()
         }
+    }
+
+    fun getPercentage(firstValue: Long, secondValue: Long): Double {
+        Log.d(TAG, "getPercentage - remaining percentage is ${(firstValue.toDouble() / secondValue.toDouble()) * 100}")
+        return (firstValue.toDouble() / secondValue.toDouble()) * 100
     }
 }

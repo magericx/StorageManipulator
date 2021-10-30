@@ -3,6 +3,7 @@ package com.magericx.storagemanipulator.ui.internal_storage
 import android.os.Bundle
 import android.text.InputType
 import android.text.method.DigitsKeyListener
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,23 +55,34 @@ class InternalStorageFragment : Fragment() {
         internalViewModel.getInternalStorageInfo(getSelectedUnit())
         //to update UI according to current info for device
         internalViewModel.internalStorageInfoObserver.observe(viewLifecycleOwner, { internalInfo ->
-            internalInfo.inUsedCapacityPercent.let {
-                binding.progressBar.progress = it.roundToInt()
-                binding.textProgress.text = getString(R.string.string_with_percent, it)
-                binding.titleAvailInternalCapacity.text = internalInfo.availableStorage.toString()
-                binding.titleTotalInternalCapacity.text = internalInfo.maximumStorage.toString()
-            }
+            updateProgressComponent(
+                internalInfo.inUsedCapacityPercent,
+                internalInfo.availableStorage,
+                internalInfo.maximumStorage
+            )
         })
         //to update UI according to generation status
         internalViewModel.generateFilesInfoObserver.observe(viewLifecycleOwner,
             { generateFileInfo ->
                 generateFileInfo.status?.let { status ->
-                    if (status == GenerateStatus.INPROGRESS){
-                        //update progressbar and return here
-                    }
-                    activity?.toast(status.status)
-                    if (status == GenerateStatus.COMPLETED) {
-                        internalViewModel.refreshAll(getSelectedUnit())
+                    if (status == GenerateStatus.INPROGRESS) {
+                        //generating in progress, update progressbar
+                        binding.titleStatusProgress.text = getString(R.string.adding)
+                        generateFileInfo.let {
+                            //TODO fix incorrect unit label for updating progress
+                            updateProgressComponent(
+                                it.progressStatus!!.toDouble(),
+                                it.addProgressInfo!!.addedSize.toDouble(),
+                                it.addProgressInfo.totalGenerateSize.toDouble()
+                            )
+                        }
+                    } else {
+                        activity?.toast(status.status)
+                        if (status == GenerateStatus.COMPLETED) {
+                            binding.titleStatusProgress.text =
+                                getString(R.string.remaining_size_status_label)
+                            internalViewModel.refreshAll(getSelectedUnit())
+                        }
                     }
                 }
             })
@@ -86,25 +98,13 @@ class InternalStorageFragment : Fragment() {
         binding.unitSizeRadioGroup.setOnCheckedChangeListener { radioGroup, checkedId ->
             when (checkedId) {
                 R.id.radio_button_kb -> {
-                    getString(R.string.kilobytes_space).let {
-                        binding.titleStatisticsProgressUnit.text = it
-                        binding.inputTextSizeContainer.suffixText = it
-                    }
-                    internalViewModel.getInternalStorageInfo(UnitStatus.KB)
+                    updateToCurrentUnit(getString(R.string.kilobytes_space), UnitStatus.KB)
                 }
                 R.id.radio_button_mb -> {
-                    getString(R.string.megabytes_space).let {
-                        binding.titleStatisticsProgressUnit.text = it
-                        binding.inputTextSizeContainer.suffixText = it
-                    }
-                    internalViewModel.getInternalStorageInfo(UnitStatus.MB)
+                    updateToCurrentUnit(getString(R.string.megabytes_space), UnitStatus.MB)
                 }
                 R.id.radio_button_gb -> {
-                    getString(R.string.gigabytes_space).let {
-                        binding.titleStatisticsProgressUnit.text = it
-                        binding.inputTextSizeContainer.suffixText = it
-                    }
-                    internalViewModel.getInternalStorageInfo(UnitStatus.GB)
+                    updateToCurrentUnit(getString(R.string.gigabytes_space), UnitStatus.GB)
                 }
             }
         }
@@ -120,6 +120,27 @@ class InternalStorageFragment : Fragment() {
                 internalViewModel.generateFiles(size = retrievedSize, unit = getSelectedUnit())
             }
         }
+    }
+
+    //method to update units label
+    private fun updateToCurrentUnit(unit: String, unitStatus: UnitStatus) {
+        unit.let {
+            binding.titleStatisticsProgressUnit.text = it
+            binding.inputTextSizeContainer.suffixText = it
+        }
+        internalViewModel.getInternalStorageInfo(unitStatus)
+    }
+
+    //method to update progress related information
+    private fun updateProgressComponent(
+        progressPercent: Double,
+        numerator: Double,
+        denominator: Double
+    ) {
+        binding.progressBar.progress = progressPercent.roundToInt()
+        binding.textProgress.text = getString(R.string.string_with_percent, progressPercent)
+        binding.titleAvailInternalCapacity.text = numerator.toString()
+        binding.titleTotalInternalCapacity.text = denominator.toString()
     }
 
     private fun getSelectedUnit(): UnitStatus {
