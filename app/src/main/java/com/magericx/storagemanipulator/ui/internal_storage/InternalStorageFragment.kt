@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.magericx.storagemanipulator.R
 import com.magericx.storagemanipulator.databinding.FragmentInternalBinding
+import com.magericx.storagemanipulator.utility.SizeUtil
 import com.magericx.storagemanipulator.utility.ToastHelper.toast
 import kotlin.math.roundToInt
 
@@ -69,12 +70,20 @@ class InternalStorageFragment : Fragment() {
                         //generating in progress, update progressbar
                         binding.titleStatusProgress.text = getString(R.string.adding)
                         generateFileInfo.let {
-                            //TODO fix incorrect unit label for updating progress
-                            updateProgressComponent(
-                                it.progressStatus!!.toDouble(),
-                                it.addProgressInfo!!.addedSize.toDouble(),
-                                it.addProgressInfo.totalGenerateSize.toDouble()
-                            )
+                            getSelectedUnit().let { unitStatus ->
+                                updateProgressComponent(
+                                    it.progressStatus!!.toDouble(),
+                                    SizeUtil.getCapacityWithConversionToUnit(
+                                        it.addProgressInfo!!.addedSize,
+                                        unitStatus
+                                    ),
+                                    SizeUtil.getCapacityWithConversionToUnit(
+                                        it.addProgressInfo.totalGenerateSize,
+                                        unitStatus
+                                    )
+                                )
+                            }
+
                         }
                     } else {
                         activity?.toast(status.status)
