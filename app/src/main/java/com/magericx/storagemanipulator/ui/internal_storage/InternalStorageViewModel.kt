@@ -99,6 +99,10 @@ class InternalStorageViewModel : ViewModel() {
         }
     }
 
+    fun pauseGenerate(){
+        internalRepository.pauseGenerate()
+    }
+
 
     //refresh feature
     fun refreshAll(unit: UnitStatus) {

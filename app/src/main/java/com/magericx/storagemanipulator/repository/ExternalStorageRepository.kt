@@ -73,6 +73,10 @@ class ExternalStorageRepository : SizeRetrieval {
         return SizeUtil.roundTo1Decimal(100.0 - getAvailCapacityInPercent())
     }
 
+    override fun pauseGenerate() {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun writeIntoFiles(size: Long, progressListener: WeakReference<ProgressListener>) {
         TODO("Not yet implemented")
     }

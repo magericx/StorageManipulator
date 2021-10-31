@@ -19,7 +19,7 @@ class FileIoUtil {
         private const val maxPercent: Double = 100.0
     }
 
-    private val internalPause = false
+    private var internalPause = false
     private val jobQueue: MutableList<StringBuilder> = mutableListOf()
 
     fun writeToInternalFile(
@@ -29,42 +29,42 @@ class FileIoUtil {
         var totalGenerateSize = sizeToGenerate
         val directory = getDirectory(isInternalDir = true)
         val randomString = StringUtil.generateRandomString()
-        var testProgress = 0
         val listener = progressListener.get()
         //first callback here to set the starting mark
         listener?.updateProgress(addProgressInfo = AddProgressInfo(totalGenerateSize = sizeToGenerate))
         while (true) {
-            Log.d(TAG, "Size here is ${sizeToGenerate}")
-            //nothing more to generate
-            if (totalGenerateSize <= 0) break
-            if (jobQueue.size <= 10) {
-                jobQueue.add(randomString)
-                continue
-            }
-            //create new file if current file exceed sizeOfEachFileBytes
-            try {
-                val fileToFill =
-                    if (getLastFileInDirectory(directory).length() < sizeOfEachFileBytes) getLastFileInDirectory(
-                        directory
-                    ) else getFile(
-                        directory,
-                        StringUtil.getNextFileName(getLastFileInDirectory(directory))
-                    )
-                writeIntoFile(fileToFill).let {
-                    totalGenerateSize -= it
+            if (!internalPause) {
+                //nothing more to generate
+                if (totalGenerateSize <= 0) break
+                if (jobQueue.size <= 10) {
+                    jobQueue.add(randomString)
+                    continue
                 }
-                updateProgressPercent(totalGenerateSize, sizeToGenerate, listener)
-            } catch (e: Exception) {
-                Log.e(TAG, "Encountered exception here $e")
-                listener?.updateProgress(
-                    progress = maxPercent,
-                    addProgressInfo = AddProgressInfo(
-                        addedSize = sizeToGenerate,
-                        totalGenerateSize = sizeToGenerate
-                    )
+                //create new file if current file exceed sizeOfEachFileBytes
+                try {
+                    val fileToFill =
+                        if (getLastFileInDirectory(directory).length() < sizeOfEachFileBytes) getLastFileInDirectory(
+                            directory
+                        ) else getFile(
+                            directory,
+                            StringUtil.getNextFileName(getLastFileInDirectory(directory))
+                        )
+                    writeIntoFile(fileToFill).let {
+                        totalGenerateSize -= it
+                    }
+                    updateProgressPercent(totalGenerateSize, sizeToGenerate, listener)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Encountered exception here $e")
+                    listener?.updateProgress(
+                        progress = maxPercent,
+                        addProgressInfo = AddProgressInfo(
+                            addedSize = sizeToGenerate,
+                            totalGenerateSize = sizeToGenerate
+                        )
 
-                )
-                break
+                    )
+                    break
+                }
             }
         }
     }
@@ -107,7 +107,7 @@ class FileIoUtil {
             }
             jobQueue.clear()
             fileWriter.flush()
-            Log.d(TAG, "Size before is ${sizeBefore} and after is ${file.length()}")
+            //Log.d(TAG, "Size before is ${sizeBefore} and after is ${file.length()}")
         } catch (e: IOException) {
             Log.e(TAG, "Exception here $e")
         } finally {
@@ -139,5 +139,9 @@ class FileIoUtil {
                 )
             )
         }
+    }
+
+    fun pauseGenerate(){
+        internalPause = !internalPause
     }
 }

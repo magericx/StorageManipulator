@@ -85,7 +85,7 @@ object SizeUtil {
     }
 
     fun getPercentage(firstValue: Long, secondValue: Long): Double {
-        Log.d(TAG, "getPercentage - remaining percentage is ${(firstValue.toDouble() / secondValue.toDouble()) * 100}")
+        //Log.d(TAG, "getPercentage - remaining percentage is ${(firstValue.toDouble() / secondValue.toDouble()) * 100}")
         return (firstValue.toDouble() / secondValue.toDouble()) * 100
     }
 }

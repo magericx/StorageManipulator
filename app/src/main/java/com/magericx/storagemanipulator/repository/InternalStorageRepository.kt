@@ -69,6 +69,10 @@ class InternalStorageRepository : SizeRetrieval {
         return SizeUtil.roundTo1Decimal(100.0 - getAvailCapacityInPercent())
     }
 
+    override fun pauseGenerate() {
+        fileHelper.pauseGenerate()
+    }
+
     override suspend fun writeIntoFiles(size: Long, progressListener: WeakReference<ProgressListener>) {
         return withContext(Dispatchers.IO) {
             runInterruptible {
@@ -83,5 +87,6 @@ interface SizeRetrieval {
     fun getAvailCapacity(): Long
     fun getAvailCapacityInPercent(): Double
     fun getInusedCapacityInPercent(): Double
+    fun pauseGenerate()
     suspend fun writeIntoFiles(size: Long, progressListener: WeakReference<ProgressListener>)
 }

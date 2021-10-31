@@ -53,11 +53,7 @@
     <string name="remaining_size_status_label">Remaining:&#160;</string>
     <!-- Message for generation -->
     <string name="work_in_progress">Started generation</string>
-
-
-
-
-
+    <string name="button_status_tag">button_status_tag</string>
 
 
 </resources>

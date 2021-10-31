@@ -83,14 +83,15 @@ class InternalStorageFragment : Fragment() {
                                     )
                                 )
                             }
-
                         }
+                        setStatusButtonVisible()
                     } else {
                         activity?.toast(status.status)
                         if (status == GenerateStatus.COMPLETED) {
                             binding.titleStatusProgress.text =
                                 getString(R.string.remaining_size_status_label)
                             internalViewModel.refreshAll(getSelectedUnit())
+                            setStatusButtonInvisible()
                         }
                     }
                 }
@@ -129,6 +130,28 @@ class InternalStorageFragment : Fragment() {
                 internalViewModel.generateFiles(size = retrievedSize, unit = getSelectedUnit())
             }
         }
+        //TODO fix button update wrongly when switching fragment
+        binding.statusButton.setOnClickListener {
+            val previousTag = binding.statusButton.getTag(R.string.button_status_tag) ?: true
+            when (previousTag as Boolean) {
+                true -> {
+                    Log.d(TAG,"Clicked to pause here")
+                    internalViewModel.pauseGenerate()
+                    //do pause here
+                }
+                false -> {
+                    Log.d(TAG,"Clicked to resume here")
+                    internalViewModel.pauseGenerate()
+                    //do resume here
+                }
+            }
+            previousTag.not().let {
+                binding.statusButton.setTag(R.string.button_status_tag, it)
+                binding.statusButton.text =
+                    if (it) getString(R.string.pause) else getString(R.string.resume)
+                //TODO update button icon
+            }
+        }
     }
 
     //method to update units label
@@ -150,6 +173,25 @@ class InternalStorageFragment : Fragment() {
         binding.textProgress.text = getString(R.string.string_with_percent, progressPercent)
         binding.titleAvailInternalCapacity.text = numerator.toString()
         binding.titleTotalInternalCapacity.text = denominator.toString()
+    }
+
+    //During generation
+    private fun setStatusButtonVisible() {
+        if (binding.statusButton.visibility == View.INVISIBLE) {
+            binding.statusButton.visibility = View.VISIBLE
+        }
+        binding.statusButton.getTag(R.string.button_status_tag).let {
+            if (it == null) {
+                binding.statusButton.setTag(R.string.button_status_tag, true)
+            }
+        }
+    }
+
+    //After generation
+    private fun setStatusButtonInvisible() {
+        if (binding.statusButton.visibility == View.VISIBLE) {
+            binding.statusButton.visibility = View.INVISIBLE
+        }
     }
 
     private fun getSelectedUnit(): UnitStatus {
