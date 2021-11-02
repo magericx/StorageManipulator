@@ -1,51 +1,47 @@
 package com.magericx.storagemanipulator
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.magericx.storagemanipulator.ui.dashboard.DashboardFragment
 import com.magericx.storagemanipulator.ui.dashboard.DashboardViewModel
+import com.magericx.storagemanipulator.ui.external_storage.ExternalStorageFragment
+import com.magericx.storagemanipulator.ui.internal_storage.InternalStorageFragment
+import com.magericx.storagemanipulator.ui.viewpager.ViewPagerAdapter
 import com.magericx.storagemanipulator.utility.ToastHelper.toast
 import java.lang.ref.WeakReference
 
+
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var navController: NavController
-    private var tabListener: WeakReference<TabListener>? = null
-    private var navListener: NavController.OnDestinationChangedListener? = null
+    private var navListener: OnPageChangeCallback? = null
     private val dashboardViewModel: DashboardViewModel by viewModels()
     val TAG = "MainActivity"
+    private lateinit var viewPager2: ViewPager2
+    private lateinit var bottomNavigationView: BottomNavigationView
+    private var tabListener: TabListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
-        navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_dashboard, R.id.internal_storage, R.id.external_storage
-            )
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
-    }
+        viewPager2 = findViewById<View>(R.id.viewpager2) as ViewPager2
+        bottomNavigationView = findViewById<View>(R.id.nav_view) as BottomNavigationView
 
-    override fun onResume() {
-        super.onResume()
         addListeners()
+        setupViewPager(viewPager2)
     }
 
-    override fun onPause() {
-        removeListeners()
-        super.onPause()
+    private fun setupViewPager(viewPager2: ViewPager2) {
+        val adapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
+        adapter.addFragment(DashboardFragment.getInstance())
+        adapter.addFragment(InternalStorageFragment.getInstance())
+        adapter.addFragment(ExternalStorageFragment.getInstance())
+        viewPager2.adapter = adapter
     }
 
     override fun onDestroy() {
@@ -55,34 +51,42 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun addListeners() {
-        tabListener = WeakReference(TabListener())
-        navListener = NavControllerListener(tabListener!!)
-        navListener?.let {
-            navController.addOnDestinationChangedListener(it)
-        }
-    }
-
-    private fun removeListeners() {
-        navListener?.let {
-            navController.removeOnDestinationChangedListener(it)
-        }
-    }
-
-    inner class TabListener : NavBarStatus {
-        override fun updateResult() {
-            val externalStorageStatus = dashboardViewModel.checkExternalAvailable()
-            if (!externalStorageStatus) {
-                this@MainActivity.toast(getString(R.string.external_not_mounted))
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_dashboard -> viewPager2.setCurrentItem(0, false)
+                R.id.internal_storage -> viewPager2.setCurrentItem(1, false)
+                R.id.external_storage -> {
+                    if (tabListener == null) {
+                        tabListener = TabListener()
+                    }
+                    if (tabListener!!.checkStorageAvailable()) {
+                        viewPager2.setCurrentItem(2, false)
+                    }
+                }
             }
+            false
+        }
+
+        val bottomNavigationView = WeakReference(bottomNavigationView)
+        navListener = ViewPagerListener(bottomNavigationView)
+        navListener?.let {
+            viewPager2.registerOnPageChangeCallback(it)
+        }
+    }
+
+    inner class TabListener : ExternalStorageStatus {
+        override fun checkStorageAvailable(): Boolean {
+            dashboardViewModel.checkExternalAvailable().let {
+                if (!it) {
+                    this@MainActivity.toast(getString(R.string.external_not_mounted))
+                }
+                return it
+            }
+
         }
     }
 }
 
-enum class NavBarHeader(val navBarName: String) {
-    DASHBOARD("Dashboard"), INTERNAL_STORAGE("Internal storage"),
-    EXTERNAL_STORAGE("External storage")
-}
-
-interface NavBarStatus {
-    fun updateResult()
+interface ExternalStorageStatus {
+    fun checkStorageAvailable(): Boolean
 }

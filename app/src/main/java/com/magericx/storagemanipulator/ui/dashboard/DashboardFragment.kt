@@ -9,7 +9,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import com.magericx.storagemanipulator.R
 
 class DashboardFragment : Fragment() {
@@ -28,6 +27,12 @@ class DashboardFragment : Fragment() {
 
     companion object {
         const val TAG = "DashboardFragment"
+        fun getInstance(): Fragment {
+            val bundle = Bundle()
+            val tabFragment = DashboardFragment()
+            tabFragment.arguments = bundle
+            return tabFragment
+        }
     }
 
     override fun onCreateView(
@@ -49,8 +54,8 @@ class DashboardFragment : Fragment() {
         return root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onResume() {
+        super.onResume()
         setFirstScreenInfo()
     }
 
@@ -58,7 +63,6 @@ class DashboardFragment : Fragment() {
         Log.d(TAG, "Called setFirstScreenInfo here")
         dashboardViewModel.setFirstScreenInfo()
         dashboardViewModel.deviceInfoObserver.observe(viewLifecycleOwner, { deviceInfo ->
-            Log.d(TAG, "Received observer here")
             deviceName.text = deviceInfo.deviceName
             manufacturer.text = deviceInfo.manufacturer
             operatingVersion.text = deviceInfo.operatingVersion
