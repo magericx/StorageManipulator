@@ -7,13 +7,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.button.MaterialButton
 import com.magericx.storagemanipulator.R
 import com.magericx.storagemanipulator.databinding.FragmentInternalBinding
 import com.magericx.storagemanipulator.utility.SizeUtil
+import com.magericx.storagemanipulator.utility.StringUtil
 import com.magericx.storagemanipulator.utility.ToastHelper.toast
 import kotlin.math.roundToInt
 
@@ -48,8 +53,15 @@ class InternalStorageFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        Log.d(TAG, "Destroyed view here")
         _binding = null
         super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        Log.d(TAG, "Destroyed fragment here")
+        //supportFragmentManager.saveFragmentInstanceState(fragment)
+        super.onDestroy()
     }
 
     private fun setFirstScreenInfo() {
@@ -132,15 +144,15 @@ class InternalStorageFragment : Fragment() {
         }
         //TODO fix button update wrongly when switching fragment
         binding.statusButton.setOnClickListener {
-            val previousTag = binding.statusButton.getTag(R.string.button_status_tag) ?: true
+            val previousTag = getGenerationButtonState()
             when (previousTag as Boolean) {
                 true -> {
-                    Log.d(TAG,"Clicked to pause here")
+                    Log.d(TAG, "Clicked to pause here")
                     internalViewModel.pauseGenerate()
                     //do pause here
                 }
                 false -> {
-                    Log.d(TAG,"Clicked to resume here")
+                    Log.d(TAG, "Clicked to resume here")
                     internalViewModel.pauseGenerate()
                     //do resume here
                 }
@@ -149,7 +161,20 @@ class InternalStorageFragment : Fragment() {
                 binding.statusButton.setTag(R.string.button_status_tag, it)
                 binding.statusButton.text =
                     if (it) getString(R.string.pause) else getString(R.string.resume)
-                //TODO update button icon
+                val resourceImage = if (it) {
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        android.R.drawable.ic_media_pause,
+                        null
+                    )
+                } else {
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        android.R.drawable.ic_media_play,
+                        null
+                    )
+                }
+                (binding.statusButton as MaterialButton).icon = resourceImage
             }
         }
     }
@@ -201,5 +226,9 @@ class InternalStorageFragment : Fragment() {
             R.id.radio_button_gb -> UnitStatus.GB
             else -> throw IllegalArgumentException("Unsupported unit type")
         }
+    }
+
+    private fun getGenerationButtonState(): Boolean {
+        return (binding.statusButton.getTag(R.string.button_status_tag) ?: true) as Boolean
     }
 }

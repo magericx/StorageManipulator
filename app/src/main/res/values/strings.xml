@@ -54,6 +54,13 @@
     <!-- Message for generation -->
     <string name="work_in_progress">Started generation</string>
     <string name="button_status_tag">button_status_tag</string>
+    <!-- Keys to save bundle -->
+    <string name="progress_button">Progress_Button</string>
+    <string name="progress_percent">Progress_Percent</string>
+    <string name="selected_unit">Selected Unit</string>
+    <string name="remaining_to_add">Remaining</string>
+    <string name="total_to_add">Total</string>
+    <string name="internal_storage_bundle">Internal Storage Bundle</string>
 
 
 </resources>

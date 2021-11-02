@@ -6,7 +6,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import java.lang.ref.WeakReference
 
-class NavControllerListener(private val listener: WeakReference<MainActivity.TabListener>) : NavController.OnDestinationChangedListener {
+class NavControllerListener(listener: WeakReference<MainActivity.TabListener>) : NavController.OnDestinationChangedListener {
     private val weakListener = listener.get()
     override fun onDestinationChanged(
         controller: NavController,

@@ -1,6 +1,7 @@
 package com.magericx.storagemanipulator.utility
 
 import android.util.Log
+import com.magericx.storagemanipulator.ui.internal_storage.UnitStatus
 import java.io.File
 import java.util.*
 
@@ -44,5 +45,24 @@ object StringUtil {
     fun getNextFileName(file: File): String {
         val fileIndex = getFileName(file).toInt()
         return filePrefix + fileIndex.inc()
+    }
+
+    fun getIntegerMappingFromUnitStatus(unitStatus: UnitStatus): Int {
+        return when (unitStatus) {
+            UnitStatus.B -> 1
+            UnitStatus.KB -> 2
+            UnitStatus.MB -> 3
+            UnitStatus.GB -> 4
+        }
+    }
+
+    fun getUnitStatusMappingFromInteger(value: Int): UnitStatus {
+        return when (value) {
+            1 -> UnitStatus.B
+            2 -> UnitStatus.KB
+            3 -> UnitStatus.MB
+            4 -> UnitStatus.GB
+            else -> UnitStatus.KB
+        }
     }
 }
