@@ -102,6 +102,15 @@ class InternalStorageFragment : Fragment() {
                     }
                 }
             })
+
+        internalViewModel.deleteFilesInfoObserver.observe(viewLifecycleOwner,
+            { deleteStatus ->
+                deleteStatus?.let{
+                    activity?.toast(it.status)
+                    if (it == DeleteStatus.CONFLICT) return@observe
+                    internalViewModel.refreshAll(getSelectedUnit())
+                }
+            })
     }
 
     //setup listeners for internal page
@@ -136,7 +145,11 @@ class InternalStorageFragment : Fragment() {
                 internalViewModel.generateFiles(size = retrievedSize, unit = getSelectedUnit())
             }
         }
-        //TODO fix button update wrongly when switching fragment
+
+        binding.deleteFileButton.setOnClickListener {
+            internalViewModel.deleteFiles()
+        }
+
         binding.statusButton.setOnClickListener {
             val previousTag = getGenerationButtonState()
             when (previousTag) {

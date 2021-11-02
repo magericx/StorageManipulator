@@ -80,6 +80,12 @@ class InternalStorageRepository : SizeRetrieval {
             }
         }
     }
+
+    override fun deleteFiles(deleteAll: Boolean): Boolean {
+        val status = fileHelper.deleteFiles(deleteAll)
+        Log.d(TAG,"Deleted status is $status")
+        return status
+    }
 }
 
 interface SizeRetrieval {
@@ -89,4 +95,5 @@ interface SizeRetrieval {
     fun getInusedCapacityInPercent(): Double
     fun pauseGenerate()
     suspend fun writeIntoFiles(size: Long, progressListener: WeakReference<ProgressListener>)
+    fun deleteFiles(deleteAll: Boolean): Boolean
 }

@@ -2,8 +2,9 @@ package com.magericx.storagemanipulator.utility
 
 import android.util.Log
 import com.magericx.storagemanipulator.StorageManipulatorApplication
-import com.magericx.storagemanipulator.ui.internal_storage.AddProgressInfo
+import com.magericx.storagemanipulator.handler.ProgressHandler
 import com.magericx.storagemanipulator.ui.internal_storage.ProgressListener
+import com.magericx.storagemanipulator.ui.internal_storage.model.AddProgressInfo
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
@@ -19,7 +20,6 @@ class FileIoUtil {
         private const val maxPercent: Double = 100.0
     }
 
-    private var internalPause = false
     private val jobQueue: MutableList<StringBuilder> = mutableListOf()
 
     fun writeToInternalFile(
@@ -33,7 +33,7 @@ class FileIoUtil {
         //first callback here to set the starting mark
         listener?.updateProgress(addProgressInfo = AddProgressInfo(totalGenerateSize = sizeToGenerate))
         while (true) {
-            if (!internalPause) {
+            if (!ProgressHandler.internalPause) {
                 //nothing more to generate
                 if (totalGenerateSize <= 0) break
                 if (jobQueue.size <= 10) {
@@ -141,7 +141,18 @@ class FileIoUtil {
         }
     }
 
-    fun pauseGenerate(){
-        internalPause = !internalPause
+    fun pauseGenerate() {
+        ProgressHandler.updateInternalPause()
+    }
+
+    //only support deleting of entire directory for now
+    fun deleteFiles(deleteAll: Boolean): Boolean {
+        val directory = getDirectory(isInternalDir = true)
+        return try {
+            directory.deleteRecursively()
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to delete directory $directory")
+            false
+        }
     }
 }

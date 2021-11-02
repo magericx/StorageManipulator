@@ -6,7 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.magericx.storagemanipulator.StorageManipulatorApplication
+import com.magericx.storagemanipulator.handler.ProgressHandler
 import com.magericx.storagemanipulator.repository.InternalStorageRepository
+import com.magericx.storagemanipulator.ui.internal_storage.model.AddProgressInfo
+import com.magericx.storagemanipulator.ui.internal_storage.model.GenerateFilesInfo
 import com.magericx.storagemanipulator.ui.internal_storage.model.InternalStorageInfo
 import com.magericx.storagemanipulator.utility.SizeUtil
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +29,11 @@ class InternalStorageViewModel : ViewModel() {
     //observer for generation status
     private val _generateFilesInfo = MutableLiveData<GenerateFilesInfo>()
     val generateFilesInfoObserver: LiveData<GenerateFilesInfo> = _generateFilesInfo
+
+    //observer for deletion status
+    private val _deleteFilesInfo = MutableLiveData<DeleteStatus>()
+    val deleteFilesInfoObserver: LiveData<DeleteStatus> = _deleteFilesInfo
+
     private val weakProgressCallback: WeakReference<ProgressListener>
         get() = WeakReference(progressCallback)
 
@@ -84,9 +92,6 @@ class InternalStorageViewModel : ViewModel() {
                     weakProgressCallback
                 )
                 Log.d(TAG, "Finished here")
-//                _generateFilesInfo.value = GenerateFilesInfo(
-//                    status = GenerateStatus.COMPLETED
-//                )
             } catch (e: Exception) {
                 Log.d(TAG, "Failed due to ${e}")
                 _generateFilesInfo.value = GenerateFilesInfo(
@@ -99,14 +104,13 @@ class InternalStorageViewModel : ViewModel() {
         }
     }
 
-    fun pauseGenerate(){
+    fun pauseGenerate() {
         internalRepository.pauseGenerate()
     }
 
 
     //refresh feature
     fun refreshAll(unit: UnitStatus) {
-        _generateFilesInfo.value = GenerateFilesInfo()
         getInternalStorageInfo(unit)
     }
 
@@ -129,6 +133,24 @@ class InternalStorageViewModel : ViewModel() {
             }
         }
     }
+
+    fun deleteFiles(deleteAll: Boolean = true) {
+        var deleteStatus: Boolean
+        poolThread.submit {
+            if (isJobRunning || ProgressHandler.internalPause){
+                _deleteFilesInfo.postValue(DeleteStatus.CONFLICT)
+                return@submit
+            }
+            deleteStatus = internalRepository.deleteFiles(deleteAll)
+            mainHandler.post {
+                if (deleteStatus) {
+                    _deleteFilesInfo.value = DeleteStatus.SUCCESS
+                } else {
+                    _deleteFilesInfo.value = DeleteStatus.FAILED
+                }
+            }
+        }
+    }
 }
 
 enum class UnitStatus {
@@ -143,19 +165,12 @@ enum class GenerateStatus(val status: String) {
 
 }
 
-data class GenerateFilesInfo(
-    val status: GenerateStatus? = null,
-    val progressStatus: Double? = null,
-    val addProgressInfo: AddProgressInfo? = null
-)
-
+enum class DeleteStatus(val status: String) {
+    SUCCESS("Files deleted successfully"), FAILED("Failed to delete files"), CONFLICT("Remove/complete existing job first")
+}
 
 //classes for updating generating progress
 interface ProgressListener {
     fun updateProgress(progress: Double = 0.0, addProgressInfo: AddProgressInfo)
 }
 
-data class AddProgressInfo(
-    val addedSize: Long = 0,
-    val totalGenerateSize: Long
-)

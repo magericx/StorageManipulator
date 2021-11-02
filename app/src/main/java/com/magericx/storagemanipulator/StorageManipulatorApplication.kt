@@ -11,7 +11,7 @@ class StorageManipulatorApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        poolThread = Executors.newFixedThreadPool(1)
+        poolThread = Executors.newFixedThreadPool(3)
         mainThreadHandler = HandlerCompat.createAsync(Looper.getMainLooper())
     }
 

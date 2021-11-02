@@ -81,4 +81,7 @@ class ExternalStorageRepository : SizeRetrieval {
         TODO("Not yet implemented")
     }
 
+    override fun deleteFiles(deleteAll: Boolean): Boolean {
+        TODO("Not yet implemented")
+    }
 }
