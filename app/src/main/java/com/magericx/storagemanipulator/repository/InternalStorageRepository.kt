@@ -73,17 +73,16 @@ class InternalStorageRepository : SizeRetrieval {
         fileHelper.pauseGenerate()
     }
 
-    override suspend fun writeIntoFiles(size: Long, progressListener: WeakReference<ProgressListener>) {
-        return withContext(Dispatchers.IO) {
-            runInterruptible {
-                fileHelper.writeToInternalFile(size, progressListener)
-            }
-        }
+    override suspend fun writeIntoFiles(
+        size: Long,
+        progressListener: WeakReference<ProgressListener>
+    ) {
+        fileHelper.writeToInternalFile(size, progressListener)
     }
 
     override fun deleteFiles(deleteAll: Boolean): Boolean {
         val status = fileHelper.deleteFiles(deleteAll)
-        Log.d(TAG,"Deleted status is $status")
+        Log.d(TAG, "Deleted status is $status")
         return status
     }
 }

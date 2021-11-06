@@ -13,10 +13,17 @@ import com.magericx.storagemanipulator.ui.internal_storage.model.GenerateFilesIn
 import com.magericx.storagemanipulator.ui.internal_storage.model.InternalStorageInfo
 import com.magericx.storagemanipulator.utility.SizeUtil
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.lang.ref.WeakReference
+import kotlin.coroutines.cancellation.CancellationException
 
 class InternalStorageViewModel : ViewModel() {
+
+    companion object {
+        private val TAG = "InternalStorageViewModel"
+    }
 
     private var internalRepository: InternalStorageRepository = InternalStorageRepository()
     private val _internalStorageInfo = MutableLiveData<InternalStorageInfo>()
@@ -24,7 +31,7 @@ class InternalStorageViewModel : ViewModel() {
     private val poolThread = StorageManipulatorApplication.poolThread
     private val mainHandler = StorageManipulatorApplication.mainThreadHandler
     var isJobRunning: Boolean = false
-    private val TAG = "InternalStorageViewModel"
+    private var currentJob: Job? = null
 
     //observer for generation status
     private val _generateFilesInfo = MutableLiveData<GenerateFilesInfo>()
@@ -64,7 +71,7 @@ class InternalStorageViewModel : ViewModel() {
     }
 
     fun generateFiles(size: Double = 0.0, max: Boolean = false, unit: UnitStatus = UnitStatus.B) {
-        viewModelScope.launch(Dispatchers.Main) {
+        currentJob = viewModelScope.launch(Dispatchers.Main) {
             try {
                 _generateFilesInfo.apply {
                     value = if (isJobRunning) GenerateFilesInfo(
@@ -92,15 +99,21 @@ class InternalStorageViewModel : ViewModel() {
                     weakProgressCallback
                 )
                 Log.d(TAG, "Finished here")
-            } catch (e: Exception) {
-                Log.d(TAG, "Failed due to ${e}")
+            } catch (e: IOException) {
+                Log.e(TAG, "Failed due to $e")
                 _generateFilesInfo.value = GenerateFilesInfo(
                     status = GenerateStatus.UNKNOWN
                 )
             } finally {
                 isJobRunning = false
             }
-
+        }
+        currentJob?.invokeOnCompletion {
+            if (it is CancellationException) {
+                Log.e(TAG, "Cancelled by user here")
+                _generateFilesInfo.value = GenerateFilesInfo(status = GenerateStatus.CANCELLED)
+                ProgressHandler.resetPauseStatus()
+            }
         }
     }
 
@@ -108,6 +121,9 @@ class InternalStorageViewModel : ViewModel() {
         internalRepository.pauseGenerate()
     }
 
+    fun cancelGenerate() {
+        currentJob?.cancel()
+    }
 
     //refresh feature
     fun refreshAll(unit: UnitStatus) {
@@ -137,7 +153,7 @@ class InternalStorageViewModel : ViewModel() {
     fun deleteFiles(deleteAll: Boolean = true) {
         var deleteStatus: Boolean
         poolThread.submit {
-            if (isJobRunning || ProgressHandler.internalPause){
+            if (isJobRunning || ProgressHandler.internalPause) {
                 _deleteFilesInfo.postValue(DeleteStatus.CONFLICT)
                 return@submit
             }
@@ -161,7 +177,9 @@ enum class GenerateStatus(val status: String) {
     FULL_STORAGE("Insufficient storage to proceed"), COMPLETED("Files have been generated succesfully"), JOB_CONFLICT(
         "Job already started"
     ),
-    UNKNOWN("Failed due to unknown reason"), STARTED("Job has started"), INPROGRESS("In Progress")
+    UNKNOWN("Failed due to unknown reason"), STARTED("Job has started"), INPROGRESS("In Progress"), CANCELLED(
+        "Job has been cancelled"
+    )
 
 }
 

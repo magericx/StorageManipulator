@@ -5,6 +5,10 @@ import com.magericx.storagemanipulator.StorageManipulatorApplication
 import com.magericx.storagemanipulator.handler.ProgressHandler
 import com.magericx.storagemanipulator.ui.internal_storage.ProgressListener
 import com.magericx.storagemanipulator.ui.internal_storage.model.AddProgressInfo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.runInterruptible
+import kotlinx.coroutines.withContext
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
@@ -22,51 +26,57 @@ class FileIoUtil {
 
     private val jobQueue: MutableList<StringBuilder> = mutableListOf()
 
-    fun writeToInternalFile(
+    //Using IO thread from couroutine
+    suspend fun writeToInternalFile(
         sizeToGenerate: Long,
         progressListener: WeakReference<ProgressListener>
     ) {
-        var totalGenerateSize = sizeToGenerate
-        val directory = getDirectory(isInternalDir = true)
-        val randomString = StringUtil.generateRandomString()
-        val listener = progressListener.get()
-        //first callback here to set the starting mark
-        listener?.updateProgress(addProgressInfo = AddProgressInfo(totalGenerateSize = sizeToGenerate))
-        while (true) {
-            if (!ProgressHandler.internalPause) {
-                //nothing more to generate
-                if (totalGenerateSize <= 0) break
-                if (jobQueue.size <= 10) {
-                    jobQueue.add(randomString)
-                    continue
-                }
-                //create new file if current file exceed sizeOfEachFileBytes
-                try {
-                    val fileToFill =
-                        if (getLastFileInDirectory(directory).length() < sizeOfEachFileBytes) getLastFileInDirectory(
-                            directory
-                        ) else getFile(
-                            directory,
-                            StringUtil.getNextFileName(getLastFileInDirectory(directory))
-                        )
-                    writeIntoFile(fileToFill).let {
-                        totalGenerateSize -= it
-                    }
-                    updateProgressPercent(totalGenerateSize, sizeToGenerate, listener)
-                } catch (e: Exception) {
-                    Log.e(TAG, "Encountered exception here $e")
-                    listener?.updateProgress(
-                        progress = maxPercent,
-                        addProgressInfo = AddProgressInfo(
-                            addedSize = sizeToGenerate,
-                            totalGenerateSize = sizeToGenerate
-                        )
+        withContext(Dispatchers.IO) {
+            runInterruptible {
+                var totalGenerateSize = sizeToGenerate
+                val directory = getDirectory(isInternalDir = true)
+                val randomString = StringUtil.generateRandomString()
+                val listener = progressListener.get()
+                //first callback here to set the starting mark
+                listener?.updateProgress(addProgressInfo = AddProgressInfo(totalGenerateSize = sizeToGenerate))
+                while (isActive) {
+                    if (!ProgressHandler.internalPause) {
+                        //nothing more to generate
+                        if (totalGenerateSize <= 0) break
+                        if (jobQueue.size <= 10) {
+                            jobQueue.add(randomString)
+                            continue
+                        }
+                        //create new file if current file exceed sizeOfEachFileBytes
+                        try {
+                            val fileToFill =
+                                if (getLastFileInDirectory(directory).length() < sizeOfEachFileBytes) getLastFileInDirectory(
+                                    directory
+                                ) else getFile(
+                                    directory,
+                                    StringUtil.getNextFileName(getLastFileInDirectory(directory))
+                                )
+                            writeIntoFile(fileToFill).let {
+                                totalGenerateSize -= it
+                            }
+                            updateProgressPercent(totalGenerateSize, sizeToGenerate, listener)
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Encountered exception here $e")
+                            listener?.updateProgress(
+                                progress = maxPercent,
+                                addProgressInfo = AddProgressInfo(
+                                    addedSize = sizeToGenerate,
+                                    totalGenerateSize = sizeToGenerate
+                                )
 
-                    )
-                    break
+                            )
+                            break
+                        }
+                    }
                 }
             }
         }
+
     }
 
     fun getDirectory(isInternalDir: Boolean = false): File {

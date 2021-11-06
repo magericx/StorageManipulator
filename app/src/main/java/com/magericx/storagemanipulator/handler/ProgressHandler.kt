@@ -8,4 +8,8 @@ object ProgressHandler {
     fun updateInternalPause(){
         internalPause = !internalPause
     }
+
+    fun resetPauseStatus(){
+        internalPause = false
+    }
 }

@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.button.MaterialButton
 import com.magericx.storagemanipulator.R
 import com.magericx.storagemanipulator.databinding.FragmentInternalBinding
@@ -19,7 +18,6 @@ import kotlin.math.roundToInt
 class InternalStorageFragment : Fragment() {
 
     private val internalViewModel: InternalStorageViewModel by activityViewModels()
-    private lateinit var internalStorageViewModel: InternalStorageViewModel
 
     private var _binding: FragmentInternalBinding? = null
     private val binding get() = _binding!!
@@ -40,8 +38,6 @@ class InternalStorageFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        internalStorageViewModel =
-            ViewModelProvider(this).get(InternalStorageViewModel::class.java)
         _binding = FragmentInternalBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -93,7 +89,7 @@ class InternalStorageFragment : Fragment() {
                         setStatusButtonVisible()
                     } else {
                         activity?.toast(status.status)
-                        if (status == GenerateStatus.COMPLETED) {
+                        if (status == GenerateStatus.COMPLETED || status == GenerateStatus.CANCELLED) {
                             binding.titleStatusProgress.text =
                                 getString(R.string.remaining_size_status_label)
                             internalViewModel.refreshAll(getSelectedUnit())
@@ -105,7 +101,7 @@ class InternalStorageFragment : Fragment() {
 
         internalViewModel.deleteFilesInfoObserver.observe(viewLifecycleOwner,
             { deleteStatus ->
-                deleteStatus?.let{
+                deleteStatus?.let {
                     activity?.toast(it.status)
                     if (it == DeleteStatus.CONFLICT) return@observe
                     internalViewModel.refreshAll(getSelectedUnit())
@@ -150,16 +146,18 @@ class InternalStorageFragment : Fragment() {
             internalViewModel.deleteFiles()
         }
 
+        binding.cancelButton.setOnClickListener {
+            internalViewModel.cancelGenerate()
+        }
+
         binding.statusButton.setOnClickListener {
             val previousTag = getGenerationButtonState()
             when (previousTag) {
                 true -> {
-                    Log.d(TAG, "Clicked to pause here")
                     internalViewModel.pauseGenerate()
                     //do pause here
                 }
                 false -> {
-                    Log.d(TAG, "Clicked to resume here")
                     internalViewModel.pauseGenerate()
                     //do resume here
                 }
@@ -212,17 +210,38 @@ class InternalStorageFragment : Fragment() {
         if (binding.statusButton.visibility == View.INVISIBLE) {
             binding.statusButton.visibility = View.VISIBLE
         }
+        if (binding.cancelButton.visibility == View.INVISIBLE) {
+            binding.cancelButton.visibility = View.VISIBLE
+        }
         binding.statusButton.getTag(R.string.button_status_tag).let {
             if (it == null) {
                 binding.statusButton.setTag(R.string.button_status_tag, true)
             }
         }
+
     }
 
     //After generation
     private fun setStatusButtonInvisible() {
         if (binding.statusButton.visibility == View.VISIBLE) {
             binding.statusButton.visibility = View.INVISIBLE
+        }
+        if (binding.cancelButton.visibility == View.VISIBLE) {
+            binding.cancelButton.visibility = View.INVISIBLE
+        }
+        //if button is false = resume state, we need to reset to prepare for next cycle
+        binding.statusButton.let { btn ->
+            if (!(btn.getTag(R.string.button_status_tag) as Boolean)) {
+                (btn as MaterialButton).apply {
+                    setTag(R.string.button_status_tag, null)
+                    text = getString(R.string.pause)
+                    icon = ResourcesCompat.getDrawable(
+                        resources,
+                        android.R.drawable.ic_media_pause,
+                        null
+                    )
+                }
+            }
         }
     }
 
