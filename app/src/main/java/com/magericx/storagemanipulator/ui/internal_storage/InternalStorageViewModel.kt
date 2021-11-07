@@ -74,7 +74,7 @@ class InternalStorageViewModel : ViewModel() {
         currentJob = viewModelScope.launch(Dispatchers.Main) {
             try {
                 _generateFilesInfo.apply {
-                    value = if (isJobRunning) GenerateFilesInfo(
+                    value = if (isJobRunning || ProgressHandler.internalPause) GenerateFilesInfo(
                         status = GenerateStatus.JOB_CONFLICT,
                         progressStatus = null
                     ) else if (internalRepository.getAvailCapacity() <= 0)
@@ -95,6 +95,7 @@ class InternalStorageViewModel : ViewModel() {
                     SizeUtil.getCapacityToBytes(size, unit)
                 }
                 internalRepository.writeIntoFiles(
+                    isInternalDir = true,
                     bytesToGenerate,
                     weakProgressCallback
                 )
@@ -118,7 +119,7 @@ class InternalStorageViewModel : ViewModel() {
     }
 
     fun pauseGenerate() {
-        internalRepository.pauseGenerate()
+        internalRepository.pauseGenerate(isInternalDir = true)
     }
 
     fun cancelGenerate() {
@@ -157,7 +158,7 @@ class InternalStorageViewModel : ViewModel() {
                 _deleteFilesInfo.postValue(DeleteStatus.CONFLICT)
                 return@submit
             }
-            deleteStatus = internalRepository.deleteFiles(deleteAll)
+            deleteStatus = internalRepository.deleteFiles(isInternalDir = true, deleteAll)
             mainHandler.post {
                 if (deleteStatus) {
                     _deleteFilesInfo.value = DeleteStatus.SUCCESS

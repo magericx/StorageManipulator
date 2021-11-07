@@ -3,23 +3,16 @@ package com.magericx.storagemanipulator.repository
 import android.os.Environment
 import android.os.StatFs
 import android.util.Log
-import com.magericx.storagemanipulator.ui.internal_storage.ProgressListener
+import com.magericx.storagemanipulator.handler.SizeRetrieval
 import com.magericx.storagemanipulator.utility.FileIoUtil
 import com.magericx.storagemanipulator.utility.SizeUtil
-import com.magericx.storagemanipulator.utility.StringUtil
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runInterruptible
-import kotlinx.coroutines.withContext
 import java.io.File
-import java.lang.ref.WeakReference
 
-class InternalStorageRepository : SizeRetrieval {
+class InternalStorageRepository : SizeRetrieval() {
 
     companion object {
         const val TAG = "InternalStorageRepository"
     }
-
-    private val fileHelper = FileIoUtil()
 
     private val dataDirectory: File by lazy {
         return@lazy Environment.getDataDirectory()
@@ -53,46 +46,5 @@ class InternalStorageRepository : SizeRetrieval {
         }
         //return SizeUtil.formatSizeDynamically(totalBlocks * blockSize)
     }
-
-    override fun getAvailCapacityInPercent(): Double {
-        if (getAvailCapacity() == 0L && getTotalMaxCapacity() == 0L) {
-            return -1.0
-        }
-        Log.d(
-            TAG,
-            "Retrieved getAvailCapacityInPercent here ${getAvailCapacity() / getTotalMaxCapacity().toDouble() * 100}"
-        )
-        return getAvailCapacity() / getTotalMaxCapacity().toDouble() * 100
-    }
-
-    override fun getInusedCapacityInPercent(): Double {
-        return SizeUtil.roundTo1Decimal(100.0 - getAvailCapacityInPercent())
-    }
-
-    override fun pauseGenerate() {
-        fileHelper.pauseGenerate()
-    }
-
-    override suspend fun writeIntoFiles(
-        size: Long,
-        progressListener: WeakReference<ProgressListener>
-    ) {
-        fileHelper.writeToInternalFile(size, progressListener)
-    }
-
-    override fun deleteFiles(deleteAll: Boolean): Boolean {
-        val status = fileHelper.deleteFiles(deleteAll)
-        Log.d(TAG, "Deleted status is $status")
-        return status
-    }
 }
 
-interface SizeRetrieval {
-    fun getTotalMaxCapacity(): Long
-    fun getAvailCapacity(): Long
-    fun getAvailCapacityInPercent(): Double
-    fun getInusedCapacityInPercent(): Double
-    fun pauseGenerate()
-    suspend fun writeIntoFiles(size: Long, progressListener: WeakReference<ProgressListener>)
-    fun deleteFiles(deleteAll: Boolean): Boolean
-}

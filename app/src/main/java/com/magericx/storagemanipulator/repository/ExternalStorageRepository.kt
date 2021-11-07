@@ -5,13 +5,14 @@ import android.os.StatFs
 import android.util.Log
 import androidx.core.content.ContextCompat.getExternalFilesDirs
 import com.magericx.storagemanipulator.StorageManipulatorApplication
+import com.magericx.storagemanipulator.handler.SizeRetrieval
 import com.magericx.storagemanipulator.ui.internal_storage.ProgressListener
 import com.magericx.storagemanipulator.utility.SizeUtil
 import java.io.File
 import java.lang.ref.WeakReference
 
 
-class ExternalStorageRepository : SizeRetrieval {
+class ExternalStorageRepository : SizeRetrieval() {
 
     companion object {
         const val TAG = "ExternalStorageRepository"
@@ -60,28 +61,5 @@ class ExternalStorageRepository : SizeRetrieval {
             Log.e(TAG, "getAvailCapacity: $e")
             0
         }
-    }
-
-    override fun getAvailCapacityInPercent(): Double {
-        if (getAvailCapacity() == 0L && getTotalMaxCapacity() == 0L) {
-            return -1.0
-        }
-        return getAvailCapacity() / getTotalMaxCapacity().toDouble() * 100
-    }
-
-    override fun getInusedCapacityInPercent(): Double {
-        return SizeUtil.roundTo1Decimal(100.0 - getAvailCapacityInPercent())
-    }
-
-    override fun pauseGenerate() {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun writeIntoFiles(size: Long, progressListener: WeakReference<ProgressListener>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun deleteFiles(deleteAll: Boolean): Boolean {
-        TODO("Not yet implemented")
     }
 }

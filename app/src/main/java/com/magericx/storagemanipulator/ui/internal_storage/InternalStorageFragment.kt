@@ -20,7 +20,7 @@ class InternalStorageFragment : Fragment() {
     private val internalViewModel: InternalStorageViewModel by activityViewModels()
 
     private var _binding: FragmentInternalBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding!!.rootView
 
 
     companion object {

@@ -28,13 +28,14 @@ class FileIoUtil {
 
     //Using IO thread from couroutine
     suspend fun writeToInternalFile(
+        isInternalDir: Boolean,
         sizeToGenerate: Long,
         progressListener: WeakReference<ProgressListener>
     ) {
         withContext(Dispatchers.IO) {
             runInterruptible {
                 var totalGenerateSize = sizeToGenerate
-                val directory = getDirectory(isInternalDir = true)
+                val directory = getDirectory(isInternalDir = isInternalDir)
                 val randomString = StringUtil.generateRandomString()
                 val listener = progressListener.get()
                 //first callback here to set the starting mark
@@ -151,13 +152,13 @@ class FileIoUtil {
         }
     }
 
-    fun pauseGenerate() {
-        ProgressHandler.updateInternalPause()
+    fun pauseGenerate(isInternalDir: Boolean) {
+        if (isInternalDir) ProgressHandler.updateInternalPause()
     }
 
     //only support deleting of entire directory for now
-    fun deleteFiles(deleteAll: Boolean): Boolean {
-        val directory = getDirectory(isInternalDir = true)
+    fun deleteFiles(deleteAll: Boolean, isInternalDir: Boolean): Boolean {
+        val directory = getDirectory(isInternalDir = isInternalDir)
         return try {
             directory.deleteRecursively()
         } catch (e: Exception) {
