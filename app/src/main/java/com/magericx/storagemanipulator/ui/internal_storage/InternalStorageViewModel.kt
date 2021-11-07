@@ -10,7 +10,7 @@ import com.magericx.storagemanipulator.handler.ProgressHandler
 import com.magericx.storagemanipulator.repository.InternalStorageRepository
 import com.magericx.storagemanipulator.ui.internal_storage.model.AddProgressInfo
 import com.magericx.storagemanipulator.ui.internal_storage.model.GenerateFilesInfo
-import com.magericx.storagemanipulator.ui.internal_storage.model.InternalStorageInfo
+import com.magericx.storagemanipulator.ui.internal_storage.model.StorageInfo
 import com.magericx.storagemanipulator.utility.SizeUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -26,8 +26,8 @@ class InternalStorageViewModel : ViewModel() {
     }
 
     private var internalRepository: InternalStorageRepository = InternalStorageRepository()
-    private val _internalStorageInfo = MutableLiveData<InternalStorageInfo>()
-    val internalStorageInfoObserver: LiveData<InternalStorageInfo> = _internalStorageInfo
+    private val _internalStorageInfo = MutableLiveData<StorageInfo>()
+    val internalStorageInfoObserver: LiveData<StorageInfo> = _internalStorageInfo
     private val poolThread = StorageManipulatorApplication.poolThread
     private val mainHandler = StorageManipulatorApplication.mainThreadHandler
     var isJobRunning: Boolean = false
@@ -60,7 +60,7 @@ class InternalStorageViewModel : ViewModel() {
             val inUsedCapacityPercent = internalRepository.getInusedCapacityInPercent()
             mainHandler.post {
                 _internalStorageInfo.apply {
-                    value = InternalStorageInfo(
+                    value = StorageInfo(
                         availableStorage = availableCapacity,
                         maximumStorage = totalCapacity,
                         inUsedCapacityPercent = inUsedCapacityPercent
