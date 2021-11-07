@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import com.google.android.material.button.MaterialButton
 import com.magericx.storagemanipulator.R
 import com.magericx.storagemanipulator.databinding.FragmentExternalBinding
+import com.magericx.storagemanipulator.ui.internal_storage.DeleteStatus
 import com.magericx.storagemanipulator.ui.internal_storage.GenerateStatus
 import com.magericx.storagemanipulator.ui.internal_storage.UnitStatus
 import com.magericx.storagemanipulator.utility.SizeUtil
@@ -165,6 +166,15 @@ class ExternalStorageFragment : Fragment() {
                             setStatusButtonInvisible()
                         }
                     }
+                }
+            })
+
+        externalViewModel.deleteFilesInfoObserver.observe(viewLifecycleOwner,
+            { deleteStatus ->
+                deleteStatus?.let {
+                    activity?.toast(it.status)
+                    if (it == DeleteStatus.CONFLICT) return@observe
+                    externalViewModel.refreshAll(getSelectedUnit())
                 }
             })
     }

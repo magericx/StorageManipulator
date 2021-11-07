@@ -2,7 +2,10 @@ package com.magericx.storagemanipulator.utility
 
 import android.util.Log
 import com.magericx.storagemanipulator.StorageManipulatorApplication
+import com.magericx.storagemanipulator.handler.ExternalProgressManager
+import com.magericx.storagemanipulator.handler.InternalProgressManager
 import com.magericx.storagemanipulator.handler.ProgressHandler
+import com.magericx.storagemanipulator.handler.ProgressManager
 import com.magericx.storagemanipulator.ui.internal_storage.ProgressListener
 import com.magericx.storagemanipulator.ui.internal_storage.model.AddProgressInfo
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +37,8 @@ class FileIoUtil {
     ) {
         withContext(Dispatchers.IO) {
             runInterruptible {
+                val progressManager: ProgressManager =
+                    if (isInternalDir) InternalProgressManager() else ExternalProgressManager()
                 var totalGenerateSize = sizeToGenerate
                 val directory = getDirectory(isInternalDir = isInternalDir)
                 val randomString = StringUtil.generateRandomString()
@@ -41,7 +46,7 @@ class FileIoUtil {
                 //first callback here to set the starting mark
                 listener?.updateProgress(addProgressInfo = AddProgressInfo(totalGenerateSize = sizeToGenerate))
                 while (isActive) {
-                    if (!ProgressHandler.internalPause) {
+                    if (!progressManager.getProgressStatus()) {
                         //nothing more to generate
                         if (totalGenerateSize <= 0) break
                         if (jobQueue.size <= 10) {
@@ -153,12 +158,14 @@ class FileIoUtil {
     }
 
     fun pauseGenerate(isInternalDir: Boolean) {
-        if (isInternalDir) ProgressHandler.updateInternalPause()
+        if (isInternalDir) ProgressHandler.updateInternalPause() else ProgressHandler.updateExternalPause()
     }
 
     //only support deleting of entire directory for now
     fun deleteFiles(deleteAll: Boolean, isInternalDir: Boolean): Boolean {
         val directory = getDirectory(isInternalDir = isInternalDir)
+        Log.d(TAG,"deleteFiles: Directory is $directory")
+        //TODO fix external directory, should not delete Storage Manipulator file
         return try {
             directory.deleteRecursively()
         } catch (e: Exception) {

@@ -113,7 +113,7 @@ class InternalStorageViewModel : ViewModel() {
             if (it is CancellationException) {
                 Log.e(TAG, "Cancelled by user here")
                 _generateFilesInfo.value = GenerateFilesInfo(status = GenerateStatus.CANCELLED)
-                ProgressHandler.resetPauseStatus()
+                ProgressHandler.resetInternalPauseStatus()
             }
         }
     }

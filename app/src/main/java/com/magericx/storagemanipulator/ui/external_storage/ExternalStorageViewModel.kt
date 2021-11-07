@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.magericx.storagemanipulator.StorageManipulatorApplication
 import com.magericx.storagemanipulator.handler.ProgressHandler
 import com.magericx.storagemanipulator.repository.ExternalStorageRepository
+import com.magericx.storagemanipulator.ui.internal_storage.DeleteStatus
 import com.magericx.storagemanipulator.ui.internal_storage.GenerateStatus
 import com.magericx.storagemanipulator.ui.internal_storage.ProgressListener
 import com.magericx.storagemanipulator.ui.internal_storage.UnitStatus
@@ -45,6 +46,10 @@ class ExternalStorageViewModel : ViewModel() {
     //observer for generation status
     private val _generateFilesInfo = MutableLiveData<GenerateFilesInfo>()
     val generateFilesInfoObserver: LiveData<GenerateFilesInfo> = _generateFilesInfo
+
+    //observer for deletion status
+    private val _deleteFilesInfo = MutableLiveData<DeleteStatus>()
+    val deleteFilesInfoObserver: LiveData<DeleteStatus> = _deleteFilesInfo
 
     //callback to update progress status
     private val progressCallback: ProgressListener = object : ProgressListener {
@@ -134,7 +139,7 @@ class ExternalStorageViewModel : ViewModel() {
             if (it is CancellationException) {
                 Log.e(TAG, "Cancelled by user here")
                 _generateFilesInfo.value = GenerateFilesInfo(status = GenerateStatus.CANCELLED)
-                ProgressHandler.resetPauseStatus()
+                ProgressHandler.resetExternalPauseStatus()
             }
         }
     }
@@ -144,10 +149,29 @@ class ExternalStorageViewModel : ViewModel() {
         getExternalStorageInfo(unit)
     }
 
-    fun deleteFiles(deleteAll: Boolean = true) {}
+    fun deleteFiles(deleteAll: Boolean = true) {
+        var deleteStatus: Boolean
+        poolThread.submit {
+            if (isJobRunning || ProgressHandler.internalPause) {
+                _deleteFilesInfo.postValue(DeleteStatus.CONFLICT)
+                return@submit
+            }
+            deleteStatus = externalRepository.deleteFiles(isInternalDir = false, deleteAll)
+            mainHandler.post {
+                if (deleteStatus) {
+                    _deleteFilesInfo.value = DeleteStatus.SUCCESS
+                } else {
+                    _deleteFilesInfo.value = DeleteStatus.FAILED
+                }
+            }
+        }
+    }
 
-    fun pauseGenerate() {}
+    fun pauseGenerate() {
+        externalRepository.pauseGenerate(isInternalDir = false)
+    }
 
     fun cancelGenerate() {
+        currentJob?.cancel()
     }
 }

@@ -4,12 +4,24 @@ object ProgressHandler {
 
     @Volatile
     var internalPause = false
+    var externalPause = false
+
 
     fun updateInternalPause(){
         internalPause = !internalPause
     }
 
-    fun resetPauseStatus(){
+    fun resetExternalPauseStatus(){
+        externalPause = false
+    }
+
+    fun updateExternalPause(){
+        externalPause = !externalPause
+    }
+
+    fun resetInternalPauseStatus(){
         internalPause = false
     }
+
+
 }
