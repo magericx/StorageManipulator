@@ -13,6 +13,8 @@ import com.magericx.storagemanipulator.ui.internal_storage.model.GenerateFilesIn
 import com.magericx.storagemanipulator.ui.internal_storage.model.InternalStorageInfo
 import com.magericx.storagemanipulator.utility.SizeUtil
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
@@ -36,6 +38,8 @@ class InternalStorageViewModel : ViewModel() {
 
     private val weakProgressCallback: WeakReference<ProgressListener>
         get() = WeakReference(progressCallback)
+
+    private var currentJob: Job? = null
 
 
     fun getInternalStorageInfo(unit: UnitStatus) {
@@ -64,7 +68,7 @@ class InternalStorageViewModel : ViewModel() {
     }
 
     fun generateFiles(size: Double = 0.0, max: Boolean = false, unit: UnitStatus = UnitStatus.B) {
-        viewModelScope.launch(Dispatchers.Main) {
+        currentJob = viewModelScope.launch(Dispatchers.Main) {
             try {
                 _generateFilesInfo.apply {
                     value = if (isJobRunning) GenerateFilesInfo(
@@ -150,6 +154,14 @@ class InternalStorageViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    fun cancelJob(){
+        currentJob?.let{
+            Log.d(TAG,"Cancel job here")
+            it.cancel()
+        }
+        Log.d(TAG,"${currentJob?.isActive}")
     }
 }
 

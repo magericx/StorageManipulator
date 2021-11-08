@@ -8,6 +8,7 @@ import com.magericx.storagemanipulator.utility.FileIoUtil
 import com.magericx.storagemanipulator.utility.SizeUtil
 import com.magericx.storagemanipulator.utility.StringUtil
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -25,6 +26,8 @@ class InternalStorageRepository : SizeRetrieval {
         return@lazy Environment.getDataDirectory()
     }
 
+    private val currentJob = null
+
     override fun getTotalMaxCapacity(): Long {
         return try {
             Log.d(TAG, "Test here ${dataDirectory.path}")
@@ -37,7 +40,6 @@ class InternalStorageRepository : SizeRetrieval {
             Log.e(TAG, "getTotalMaxCapacity: $e")
             0
         }
-        //return SizeUtil.formatSizeDynamically(totalBlocks * blockSize)
     }
 
     override fun getAvailCapacity(): Long {
@@ -51,7 +53,6 @@ class InternalStorageRepository : SizeRetrieval {
             Log.e(TAG, "getAvailCapacity: $e")
             0
         }
-        //return SizeUtil.formatSizeDynamically(totalBlocks * blockSize)
     }
 
     override fun getAvailCapacityInPercent(): Double {
@@ -73,8 +74,11 @@ class InternalStorageRepository : SizeRetrieval {
         fileHelper.pauseGenerate()
     }
 
-    override suspend fun writeIntoFiles(size: Long, progressListener: WeakReference<ProgressListener>) {
-        return withContext(Dispatchers.IO) {
+    override suspend fun writeIntoFiles(
+        size: Long,
+        progressListener: WeakReference<ProgressListener>
+    ) {
+        withContext(Dispatchers.IO) {
             runInterruptible {
                 fileHelper.writeToInternalFile(size, progressListener)
             }
@@ -83,7 +87,7 @@ class InternalStorageRepository : SizeRetrieval {
 
     override fun deleteFiles(deleteAll: Boolean): Boolean {
         val status = fileHelper.deleteFiles(deleteAll)
-        Log.d(TAG,"Deleted status is $status")
+        Log.d(TAG, "Deleted status is $status")
         return status
     }
 }

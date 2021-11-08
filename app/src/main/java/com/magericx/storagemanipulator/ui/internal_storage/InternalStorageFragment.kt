@@ -19,7 +19,6 @@ import kotlin.math.roundToInt
 class InternalStorageFragment : Fragment() {
 
     private val internalViewModel: InternalStorageViewModel by activityViewModels()
-    private lateinit var internalStorageViewModel: InternalStorageViewModel
 
     private var _binding: FragmentInternalBinding? = null
     private val binding get() = _binding!!
@@ -40,8 +39,6 @@ class InternalStorageFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        internalStorageViewModel =
-            ViewModelProvider(this).get(InternalStorageViewModel::class.java)
         _binding = FragmentInternalBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -184,6 +181,10 @@ class InternalStorageFragment : Fragment() {
                 (binding.statusButton as MaterialButton).icon = resourceImage
             }
         }
+
+        binding.cancelButton.setOnClickListener{
+            internalViewModel.cancelJob()
+        }
     }
 
     //method to update units label
@@ -209,6 +210,9 @@ class InternalStorageFragment : Fragment() {
 
     //During generation
     private fun setStatusButtonVisible() {
+        if (binding.cancelButton.visibility == View.INVISIBLE){
+            binding.cancelButton.visibility = View.VISIBLE
+        }
         if (binding.statusButton.visibility == View.INVISIBLE) {
             binding.statusButton.visibility = View.VISIBLE
         }
@@ -223,6 +227,9 @@ class InternalStorageFragment : Fragment() {
     private fun setStatusButtonInvisible() {
         if (binding.statusButton.visibility == View.VISIBLE) {
             binding.statusButton.visibility = View.INVISIBLE
+        }
+        if (binding.cancelButton.visibility == View.VISIBLE) {
+            binding.cancelButton.visibility = View.INVISIBLE
         }
     }
 
