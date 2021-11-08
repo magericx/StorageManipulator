@@ -4,8 +4,6 @@ import android.os.Environment
 import android.os.StatFs
 import android.util.Log
 import com.magericx.storagemanipulator.handler.SizeRetrieval
-import com.magericx.storagemanipulator.utility.FileIoUtil
-import com.magericx.storagemanipulator.utility.SizeUtil
 import java.io.File
 
 class InternalStorageRepository : SizeRetrieval() {

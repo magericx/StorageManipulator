@@ -1,15 +1,10 @@
 package com.magericx.storagemanipulator.repository
 
-import android.os.Environment
 import android.os.StatFs
 import android.util.Log
-import androidx.core.content.ContextCompat.getExternalFilesDirs
 import com.magericx.storagemanipulator.StorageManipulatorApplication
 import com.magericx.storagemanipulator.handler.SizeRetrieval
-import com.magericx.storagemanipulator.ui.internal_storage.ProgressListener
-import com.magericx.storagemanipulator.utility.SizeUtil
 import java.io.File
-import java.lang.ref.WeakReference
 
 
 class ExternalStorageRepository : SizeRetrieval() {

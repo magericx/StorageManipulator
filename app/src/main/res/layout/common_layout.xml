@@ -18,18 +18,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/cancel_button"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:layout_alignParentEnd="true"
-            android:layout_toEndOf="@id/progressBar"
+            android:textColor="@color/reply_orange"
+            android:layout_toEndOf="@+id/progressBar"
             android:visibility="invisible"
-            app:icon="@android:drawable/ic_delete"
-            android:tint="@color/reply_orange"/>
+            android:minWidth="0dp"
+            android:background="@android:color/transparent"
+            app:iconPadding="0dp"
+            app:icon="@android:drawable/ic_menu_close_clear_cancel" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -62,11 +61,12 @@
             android:layout_alignBottom="@+id/progressBar"
             android:layout_centerInParent="true"
             android:text="@string/text_unknown"
+            android:textColor="@color/black"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <Button
             android:id="@+id/status_button"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/text_progress"
@@ -114,7 +114,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/string_with_divide" />
+            android:text="@string/string_with_divide"
+            android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/title_total_internal_capacity"
@@ -164,6 +165,7 @@
                 android:layout_height="match_parent"
                 android:minWidth="100dp"
                 android:text="@string/kilobytes"
+                android:textColor="@color/black"
                 app:useMaterialThemeColors="false" />
 
             <RadioButton
@@ -173,6 +175,7 @@
                 android:layout_height="match_parent"
                 android:minWidth="100dp"
                 android:text="@string/megabytes"
+                android:textColor="@color/black"
                 app:useMaterialThemeColors="false" />
 
             <RadioButton
@@ -182,6 +185,7 @@
                 android:layout_height="match_parent"
                 android:minWidth="100dp"
                 android:text="@string/gigabytes"
+                android:textColor="@color/black"
                 app:useMaterialThemeColors="false" />
         </RadioGroup>
 
@@ -212,7 +216,8 @@
             android:layout_weight="0.23"
             android:checked="false"
             android:text="@string/input_max_size_label"
-            app:useMaterialThemeColors="false" />
+            android:textColor="@color/black"
+            app:useMaterialThemeColors="true" />
 
         <TextView
             android:layout_width="0dp"
@@ -221,7 +226,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_textSize_container"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
@@ -229,13 +233,18 @@
             android:maxWidth="300dp"
             android:minWidth="250dp"
             app:endIconMode="clear_text"
-            app:suffixText="KBs">
+            app:suffixText="KBs"
+            app:suffixTextColor="@color/black"
+            android:textColorHint="@color/reddish_brown"
+            app:boxStrokeColor="@color/black">
+
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/input_textSize_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number|numberDecimal" />
+                android:inputType="number|numberDecimal"
+                android:textColor="@color/black"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -269,7 +278,9 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/reply_orange"
             android:text="@string/file_generate_label"
-            android:visibility="visible" />
+            android:visibility="visible"
+            style="@style/Widget.Material3.Button.TextButton"
+            />
 
         <TextView
             android:layout_width="0dp"
@@ -282,7 +293,8 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/reply_orange"
             android:text="@string/file_delete_label"
-            android:visibility="visible" />
+            android:visibility="visible"
+            style="@style/Widget.Material3.Button.TextButton"/>
 
         <TextView
             android:layout_width="0dp"
