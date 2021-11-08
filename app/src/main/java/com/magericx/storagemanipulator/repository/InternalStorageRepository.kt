@@ -28,7 +28,6 @@ class InternalStorageRepository : SizeRetrieval() {
             Log.e(TAG, "getTotalMaxCapacity: $e")
             0
         }
-        //return SizeUtil.formatSizeDynamically(totalBlocks * blockSize)
     }
 
     override fun getAvailCapacity(): Long {
@@ -42,7 +41,6 @@ class InternalStorageRepository : SizeRetrieval() {
             Log.e(TAG, "getAvailCapacity: $e")
             0
         }
-        //return SizeUtil.formatSizeDynamically(totalBlocks * blockSize)
     }
 }
 

@@ -174,4 +174,8 @@ class ExternalStorageViewModel : ViewModel() {
     fun cancelGenerate() {
         currentJob?.cancel()
     }
+
+    fun checkExternalAvailable(): Boolean {
+        return externalRepository.checkExternalAvailable()
+    }
 }

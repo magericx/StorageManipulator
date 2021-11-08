@@ -37,8 +37,7 @@ class FileIoUtil {
     ) {
         withContext(Dispatchers.IO) {
             runInterruptible {
-                val progressManager: ProgressManager =
-                    if (isInternalDir) InternalProgressManager() else ExternalProgressManager()
+                val progressManager = getProgressManager(isInternalDir)
                 var totalGenerateSize = sizeToGenerate
                 val directory = getDirectory(isInternalDir = isInternalDir)
                 val randomString = StringUtil.generateRandomString()
@@ -164,13 +163,23 @@ class FileIoUtil {
     //only support deleting of entire directory for now
     fun deleteFiles(deleteAll: Boolean, isInternalDir: Boolean): Boolean {
         val directory = getDirectory(isInternalDir = isInternalDir)
-        Log.d(TAG,"deleteFiles: Directory is $directory")
-        //TODO fix external directory, should not delete Storage Manipulator file
+        Log.d(TAG, "deleteFiles: Directory is $directory")
         return try {
-            directory.deleteRecursively()
+            if (isInternalDir) {
+                directory.deleteRecursively()
+            } else {
+                directory.listFiles()?.forEach {
+                    it.delete()
+                }
+                true
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to delete directory $directory")
             false
         }
+    }
+
+    private fun getProgressManager(isInternalDir: Boolean): ProgressManager {
+        return if (isInternalDir) InternalProgressManager() else ExternalProgressManager()
     }
 }

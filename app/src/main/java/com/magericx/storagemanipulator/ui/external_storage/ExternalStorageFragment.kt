@@ -48,6 +48,12 @@ class ExternalStorageFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setFirstScreenInfo()
         setupListeners()
+        checkExternalAvailable()
+    }
+
+    override fun onResume(){
+        super.onResume()
+        checkExternalAvailable()
     }
 
     private fun setupListeners() {
@@ -252,6 +258,21 @@ class ExternalStorageFragment : Fragment() {
             binding.inputTextSizeContainer.suffixText = it
         }
         externalViewModel.getExternalStorageInfo(unitStatus)
+    }
+
+    private fun checkExternalAvailable(){
+        if (!externalViewModel.checkExternalAvailable()){
+            binding.let{ root->
+                root.generateFileButton.isEnabled = false
+                root.deleteFileButton.isEnabled = false
+                getString(R.string.text_unknown).let{
+                    root.textProgress.text = it
+                    root.titleAvailInternalCapacity.text = it
+                }
+                root.titleTotalInternalCapacity.visibility = View.INVISIBLE
+                root.titleDivider.visibility = View.INVISIBLE
+            }
+        }
     }
 
 
