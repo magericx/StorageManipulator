@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+
+-printusage /build/outputs/mapping/release/usage.txt
+-printseeds /build/outputs/mapping/release/seeds.txt

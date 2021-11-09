@@ -5,8 +5,21 @@ plugins {
 
 android {
 
+    signingConfigs {
+        release {
+            storeFile file(System.getenv("STORAGE_MANIPULATOR_KEYSTORE"))
+            keyAlias System.getenv("STORAGE_MANIPULATOR_KEY")
+            storePassword System.getenv("STORAGE_MANIPULATOR_STOREPASSWORD")
+            keyPassword System.getenv("STORAGE_MANIPULATOR_KEYPASSWORD")
+
+            // Optional, specify signing versions used
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
     buildFeatures {
         viewBinding = true
+
     }
 
     compileSdkVersion 31
@@ -23,7 +36,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            signingConfig signingConfigs.release
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -54,7 +68,7 @@ dependencies {
 
     //test
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
-    testImplementation 'junit:junit:'
+    testImplementation("junit:junit:4.13.2")
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }
