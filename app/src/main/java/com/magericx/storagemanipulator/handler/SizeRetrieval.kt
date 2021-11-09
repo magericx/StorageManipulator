@@ -24,7 +24,7 @@ abstract class SizeRetrieval {
         return getAvailCapacity() / getTotalMaxCapacity().toDouble() * 100
     }
 
-    fun getInusedCapacityInPercent(): Double {
+    fun getInUsedCapacityInPercent(): Double {
         return SizeUtil.roundTo1Decimal(100.0 - getAvailCapacityInPercent())
     }
 

@@ -18,7 +18,7 @@
 
         <!-- Customize your theme here. -->
         <item name="colorPrimaryContainer">@color/reply_light_yellow</item>
-        <item name="colorOnPrimaryContainer">@color/reply_biege</item>
+        <item name="colorOnPrimaryContainer">@color/reply_beige</item>
         <item name="colorOutline">@color/reply_light_yellow</item>
 
 

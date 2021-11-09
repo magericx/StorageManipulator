@@ -29,7 +29,7 @@ class FileIoUtil {
 
     private val jobQueue: MutableList<StringBuilder> = mutableListOf()
 
-    //Using IO thread from couroutine
+    //Using IO thread from coroutine
     suspend fun writeToInternalFile(
         isInternalDir: Boolean,
         sizeToGenerate: Long,
@@ -84,7 +84,7 @@ class FileIoUtil {
 
     }
 
-    fun getDirectory(isInternalDir: Boolean = false): File {
+    private fun getDirectory(isInternalDir: Boolean = false): File {
         //automatically create a parent directory if not exists
         val rootFile = if (isInternalDir) {
             File(StorageManipulatorApplication.instance.filesDir, internalStorage)
@@ -99,17 +99,15 @@ class FileIoUtil {
         return rootFile
     }
 
-    fun getLastFileInDirectory(parentDirectory: File): File {
+    private fun getLastFileInDirectory(parentDirectory: File): File {
         //file_5, file_4,file_3, file_2, file_1, get file_5 in this case
         // Spawn file_1 if there are no children file yet
-        val lastFile = parentDirectory.listFiles()?.maxOrNull() ?: File(parentDirectory, "file_1")
-        return lastFile
+        return parentDirectory.listFiles()?.maxOrNull() ?: File(parentDirectory, "file_1")
     }
 
 
-    fun getFile(parentDirectory: File, childrenFileName: String): File {
-        val childrenFile = File(parentDirectory, childrenFileName)
-        return childrenFile
+    private fun getFile(parentDirectory: File, childrenFileName: String): File {
+        return File(parentDirectory, childrenFileName)
     }
 
     private fun writeIntoFile(file: File): Long {

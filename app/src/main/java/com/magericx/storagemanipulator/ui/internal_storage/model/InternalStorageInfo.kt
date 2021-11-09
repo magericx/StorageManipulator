@@ -1,6 +1,5 @@
 package com.magericx.storagemanipulator.ui.internal_storage.model
 
-import com.magericx.storagemanipulator.ui.internal_storage.DeleteStatus
 import com.magericx.storagemanipulator.ui.internal_storage.GenerateStatus
 
 data class StorageInfo(

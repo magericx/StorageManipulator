@@ -22,7 +22,7 @@ import kotlin.coroutines.cancellation.CancellationException
 class InternalStorageViewModel : ViewModel() {
 
     companion object {
-        private val TAG = "InternalStorageViewModel"
+        private const val TAG = "InternalStorageViewModel"
     }
 
     private var internalRepository: InternalStorageRepository = InternalStorageRepository()
@@ -30,7 +30,7 @@ class InternalStorageViewModel : ViewModel() {
     val internalStorageInfoObserver: LiveData<StorageInfo> = _internalStorageInfo
     private val poolThread = StorageManipulatorApplication.poolThread
     private val mainHandler = StorageManipulatorApplication.mainThreadHandler
-    var isJobRunning: Boolean = false
+    private var isJobRunning: Boolean = false
     private var currentJob: Job? = null
 
     //observer for generation status
@@ -57,7 +57,7 @@ class InternalStorageViewModel : ViewModel() {
                     internalRepository.getTotalMaxCapacity(),
                     unit
                 )
-            val inUsedCapacityPercent = internalRepository.getInusedCapacityInPercent()
+            val inUsedCapacityPercent = internalRepository.getInUsedCapacityInPercent()
             mainHandler.post {
                 _internalStorageInfo.apply {
                     value = StorageInfo(
@@ -186,7 +186,7 @@ enum class UnitStatus {
 }
 
 enum class GenerateStatus(val status: String) {
-    FULL_STORAGE("Insufficient storage to proceed"), COMPLETED("Files have been generated succesfully"), JOB_CONFLICT(
+    FULL_STORAGE("Insufficient storage to proceed"), COMPLETED("Files have been generated successfully"), JOB_CONFLICT(
         "Job already started"
     ),
     UNKNOWN("Failed due to unknown reason"), STARTED("Job has started"), INPROGRESS("In Progress"), CANCELLED(

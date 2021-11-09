@@ -1,46 +1,20 @@
 package com.magericx.storagemanipulator.utility
 
-import android.util.Log
 import com.magericx.storagemanipulator.ui.internal_storage.UnitStatus
 
 
 object SizeUtil {
     const val TAG = "SizeUtil"
 
-    fun formatSizeDynamically(size: Long): String {
-        var newSize = size
-        var suffix: String? = null
-
-        if (newSize >= 1024) {
-            suffix = "KB"
-            newSize /= 1024
-            if (newSize >= 1024) {
-                suffix = "MB"
-                newSize /= 1024
-            }
-        }
-
-        val resultBuffer = StringBuilder(newSize.toString())
-
-        var commaOffset = resultBuffer.length - 3
-        while (commaOffset > 0) {
-            resultBuffer.insert(commaOffset, ',')
-            commaOffset -= 3
-        }
-
-        if (suffix != null) resultBuffer.append(suffix)
-        return resultBuffer.toString()
-    }
-
-    fun formatSizeKb(size: Long): Double {
+    private fun formatSizeKb(size: Long): Double {
         return (size / 1024).toDouble()
     }
 
-    fun formatSizeMb(size: Long): Double {
+    private fun formatSizeMb(size: Long): Double {
         return (size / 1024 / 1024).toDouble()
     }
 
-    fun formatSizeGb(size: Long): Double {
+    private fun formatSizeGb(size: Long): Double {
         return roundTo1Decimal(size.toDouble() / 1073741824.toDouble())
     }
 
@@ -48,19 +22,19 @@ object SizeUtil {
         return String.format("%.1f", value).toDouble()
     }
 
-    fun removeDecimalPoint(value: Double): Double {
+    private fun removeDecimalPoint(value: Double): Double {
         return String.format("%.0f", value).toDouble()
     }
 
-    fun formatKbToBytes(size: Double): Double {
+    private fun formatKbToBytes(size: Double): Double {
         return (size * 1024)
     }
 
-    fun formatMbToBytes(size: Double): Double {
+    private fun formatMbToBytes(size: Double): Double {
         return (size * 1024 * 1024)
     }
 
-    fun formatGbToBytes(size: Double): Double {
+    private fun formatGbToBytes(size: Double): Double {
         return (size * 1024 * 1024 * 1024)
     }
 

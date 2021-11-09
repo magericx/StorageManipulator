@@ -26,7 +26,7 @@ import kotlin.coroutines.cancellation.CancellationException
 class ExternalStorageViewModel : ViewModel() {
 
     companion object {
-        private val TAG = "ExternalStorageViewModel"
+        private const val TAG = "ExternalStorageViewModel"
     }
 
     private var externalRepository: ExternalStorageRepository = ExternalStorageRepository()
@@ -40,7 +40,7 @@ class ExternalStorageViewModel : ViewModel() {
     private val _externalStorageInfo = MutableLiveData<StorageInfo>()
     val externalStorageInfoObserver: LiveData<StorageInfo> = _externalStorageInfo
 
-    var isJobRunning: Boolean = false
+    private var isJobRunning: Boolean = false
     private var currentJob: Job? = null
 
     //observer for generation status
@@ -82,7 +82,7 @@ class ExternalStorageViewModel : ViewModel() {
                     externalRepository.getTotalMaxCapacity(),
                     unit
                 )
-            val inUsedCapacityPercent = externalRepository.getInusedCapacityInPercent()
+            val inUsedCapacityPercent = externalRepository.getInUsedCapacityInPercent()
             mainHandler.post {
                 _externalStorageInfo.apply {
                     value = StorageInfo(

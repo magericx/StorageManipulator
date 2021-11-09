@@ -1,7 +1,6 @@
 package com.magericx.storagemanipulator.ui.external_storage
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,7 +61,7 @@ class ExternalStorageFragment : Fragment() {
             binding.inputTextSizeContainer.isEnabled = !isChecked
             binding.inputTextSizeField.isEnabled = !isChecked
         }
-        binding.unitSizeRadioGroup.setOnCheckedChangeListener { radioGroup, checkedId ->
+        binding.unitSizeRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.radio_button_kb -> {
                     updateToCurrentUnit(getString(R.string.kilobytes_space), UnitStatus.KB)

@@ -2,13 +2,10 @@ package com.magericx.storagemanipulator.utility
 
 import android.app.ActivityManager
 import android.content.Context.ACTIVITY_SERVICE
-import android.os.Environment
-import android.util.Log
 import com.magericx.storagemanipulator.StorageManipulatorApplication
-import java.io.File
 
 object MemoryUtil {
-    val TAG = "MemoryUtil"
+    const val TAG = "MemoryUtil"
 
     val mi: ActivityManager.MemoryInfo by lazy{
         return@lazy setupMemoryInfo()

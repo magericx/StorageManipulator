@@ -102,5 +102,5 @@ class DashboardFragment : Fragment() {
 }
 
 enum class InformationStatus(val status: String) {
-    UNKNOWN("Unknown"), RETRIEVING("Retrieving")
+    UNKNOWN("Unknown")
 }

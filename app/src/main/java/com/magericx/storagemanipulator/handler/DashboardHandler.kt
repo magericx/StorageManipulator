@@ -19,8 +19,8 @@ class DashboardHandler(
             totalMemory = deviceInfoRepository.getTotalDeviceMemorySize(),
             availMemory = deviceInfoRepository.getAvailDeviceMemorySize(),
             releaseVersion = deviceInfoRepository.getVersionRelease(),
-            internalUtilizedCapacityPercent = internalStorageRepository.getInusedCapacityInPercent(),
-            externalUtilizedCapacityPercent = externalStorageRepository.getInusedCapacityInPercent()
+            internalUtilizedCapacityPercent = internalStorageRepository.getInUsedCapacityInPercent(),
+            externalUtilizedCapacityPercent = externalStorageRepository.getInUsedCapacityInPercent()
         )
     }
 

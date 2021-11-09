@@ -2,7 +2,7 @@
 <resources>
 
     <style name="progressbar_theme" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:progressBackgroundTint">@color/reply_biege</item>
+        <item name="android:progressBackgroundTint">@color/reply_beige</item>
         <item name="android:progressTint">@color/reply_yellow</item>
         <item name="android:minWidth">200dp</item>
     </style>
