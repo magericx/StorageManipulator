@@ -14,7 +14,7 @@ android {
     defaultConfig {
         applicationId "com.magericx.storagemanipulator"
         minSdkVersion 24
-        targetSdkVersion 29
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
 
@@ -54,7 +54,7 @@ dependencies {
 
     //test
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
-    testImplementation 'junit:junit:4.+'
+    testImplementation 'junit:junit:'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }

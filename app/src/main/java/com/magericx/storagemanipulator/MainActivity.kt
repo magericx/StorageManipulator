@@ -20,7 +20,6 @@ class MainActivity : AppCompatActivity() {
 
     private var navListener: OnPageChangeCallback? = null
     private val dashboardViewModel: DashboardViewModel by viewModels()
-    val TAG = "MainActivity"
     private lateinit var viewPager2: ViewPager2
     private lateinit var bottomNavigationView: BottomNavigationView
     private var tabListener: TabListener? = null

@@ -34,7 +34,7 @@ object StringUtil {
     }
 
     //get the second element from the filename, file_5
-    fun getFileName(file: File): String {
+    private fun getFileName(file: File): String {
         val delimitedFileName = file.name.split("_")
         return delimitedFileName[1]
     }

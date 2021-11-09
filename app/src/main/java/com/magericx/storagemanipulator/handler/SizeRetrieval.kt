@@ -8,7 +8,9 @@ import java.lang.ref.WeakReference
 
 abstract class SizeRetrieval {
 
-    private val TAG = "SizeRetrieval"
+    companion object{
+        private const val TAG = "SizeRetrieval"
+    }
     private var fileHelper: FileIoUtil = FileIoUtil()
 
     abstract fun getTotalMaxCapacity(): Long
