@@ -18,7 +18,6 @@ class InternalStorageRepository : SizeRetrieval() {
 
     override fun getTotalMaxCapacity(): Long {
         return try {
-            Log.d(TAG, "Test here ${dataDirectory.path}")
             val stat = StatFs(dataDirectory.path)
             val blockSize: Long = stat.blockSizeLong
             val totalBlocks = stat.blockCountLong

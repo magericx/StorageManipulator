@@ -26,7 +26,7 @@ import kotlin.coroutines.cancellation.CancellationException
 class ExternalStorageViewModel : ViewModel() {
 
     companion object {
-        private val TAG = "InternalStorageViewModel"
+        private val TAG = "ExternalStorageViewModel"
     }
 
     private var externalRepository: ExternalStorageRepository = ExternalStorageRepository()
@@ -57,7 +57,6 @@ class ExternalStorageViewModel : ViewModel() {
             progress: Double,
             addProgressInfo: AddProgressInfo
         ) {
-            Log.d(TAG, "Updating progress of $progress")
             val currentStatus: GenerateStatus = if (progress >= 100.0) GenerateStatus.COMPLETED else
                 GenerateStatus.INPROGRESS
             mainHandler.post {
@@ -97,16 +96,27 @@ class ExternalStorageViewModel : ViewModel() {
     }
 
     fun generateFiles(size: Double = 0.0, max: Boolean = false, unit: UnitStatus = UnitStatus.B) {
+        currentJob?.let {
+            //Job is running, whether on pause or other state
+            if (it.isActive) {
+                _generateFilesInfo.apply {
+                    value = GenerateFilesInfo(
+                        status = GenerateStatus.JOB_CONFLICT,
+                        progressStatus = null
+                    )
+                }
+                return
+            }
+        }
+        //if there is no existing job running, assign a new job
         currentJob = viewModelScope.launch(Dispatchers.Main) {
             try {
                 _generateFilesInfo.apply {
-                    value = if (isJobRunning || ProgressHandler.internalPause) GenerateFilesInfo(
-                        status = GenerateStatus.JOB_CONFLICT,
-                        progressStatus = null
-                    ) else if (externalRepository.getAvailCapacity() <= 0)
-                        GenerateFilesInfo(status = GenerateStatus.FULL_STORAGE)
-                    else
-                        GenerateFilesInfo(status = GenerateStatus.STARTED, progressStatus = 0.0)
+                    value =
+                        if (externalRepository.getAvailCapacity() <= 0)
+                            GenerateFilesInfo(status = GenerateStatus.FULL_STORAGE)
+                        else
+                            GenerateFilesInfo(status = GenerateStatus.STARTED, progressStatus = 0.0)
                 }
                 if (_generateFilesInfo.value != GenerateFilesInfo(
                         status = GenerateStatus.STARTED,
@@ -152,7 +162,7 @@ class ExternalStorageViewModel : ViewModel() {
     fun deleteFiles(deleteAll: Boolean = true) {
         var deleteStatus: Boolean
         poolThread.submit {
-            if (isJobRunning || ProgressHandler.internalPause) {
+            if (currentJob?.isActive == true){
                 _deleteFilesInfo.postValue(DeleteStatus.CONFLICT)
                 return@submit
             }
