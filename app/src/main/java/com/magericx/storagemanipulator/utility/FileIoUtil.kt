@@ -37,6 +37,7 @@ class FileIoUtil {
     ) {
         withContext(Dispatchers.IO) {
             runInterruptible {
+                //TODO add logic to change jobQueue size dynamically according to selected unit + generate size
                 val progressManager = getProgressManager(isInternalDir)
                 var totalGenerateSize = sizeToGenerate
                 val directory = getDirectory(isInternalDir = isInternalDir)
@@ -48,7 +49,7 @@ class FileIoUtil {
                     if (!progressManager.getProgressStatus()) {
                         //nothing more to generate
                         if (totalGenerateSize <= 0) break
-                        if (jobQueue.size <= 10) {
+                        if (jobQueue.size <= 20) {
                             jobQueue.add(randomString)
                             continue
                         }
@@ -116,10 +117,12 @@ class FileIoUtil {
         val fileWriter = BufferedWriter(FileWriter(file, true))
         try {
             jobQueue.forEach {
-                fileWriter.append(it.toString())
+                //TODO optimize writing logic
+                fileWriter.write(it.toString())
+//                fileWriter.append(it.toString())
             }
-            jobQueue.clear()
-            fileWriter.flush()
+            //jobQueue.clear()
+//            fileWriter.flush()
             //Log.d(TAG, "Size before is ${sizeBefore} and after is ${file.length()}")
         } catch (e: IOException) {
             Log.e(TAG, "Exception here $e")

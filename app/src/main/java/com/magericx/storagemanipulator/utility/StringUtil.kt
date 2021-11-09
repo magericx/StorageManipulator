@@ -8,6 +8,7 @@ object StringUtil {
     private const val randomChars: String = "ABCDEFGHIJKLMNOPQRSTUWXYZ1234567890"
     const val TAG = "StringUtil"
     private const val filePrefix = "file_"
+    private const val stringLength = 1000000L
 
     fun capitalized(s: String): String {
         if (s.isBlank() || s.isEmpty()) {
@@ -24,7 +25,7 @@ object StringUtil {
     fun generateRandomString(): StringBuilder {
         val randomString: StringBuilder = StringBuilder()
         val randomize = Random()
-        while (randomString.length < 2000) {
+        while (randomString.length < stringLength) {
             val index: Int = (randomize.nextFloat() * randomChars.length).toInt()
             //Log.d(TAG, "Random integer here is $index")
             randomString.append(randomChars[index])
