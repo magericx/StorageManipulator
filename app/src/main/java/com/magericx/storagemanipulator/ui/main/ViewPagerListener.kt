@@ -1,7 +1,8 @@
-package com.magericx.storagemanipulator
+package com.magericx.storagemanipulator.ui.main
 
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.magericx.storagemanipulator.R
 import java.lang.ref.WeakReference
 
 class ViewPagerListener(bnv: WeakReference<BottomNavigationView>) :

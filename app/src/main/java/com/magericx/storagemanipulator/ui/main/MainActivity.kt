@@ -1,4 +1,4 @@
-package com.magericx.storagemanipulator
+package com.magericx.storagemanipulator.ui.main
 
 import android.os.Bundle
 import android.view.View
@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.magericx.storagemanipulator.R
 import com.magericx.storagemanipulator.ui.dashboard.DashboardFragment
 import com.magericx.storagemanipulator.ui.dashboard.DashboardViewModel
 import com.magericx.storagemanipulator.ui.external_storage.ExternalStorageFragment

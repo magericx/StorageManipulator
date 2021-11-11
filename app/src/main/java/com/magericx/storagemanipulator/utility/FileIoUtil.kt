@@ -6,6 +6,7 @@ import com.magericx.storagemanipulator.handler.ExternalProgressManager
 import com.magericx.storagemanipulator.handler.InternalProgressManager
 import com.magericx.storagemanipulator.handler.ProgressHandler
 import com.magericx.storagemanipulator.handler.ProgressManager
+import com.magericx.storagemanipulator.performance.PerformanceHelper
 import com.magericx.storagemanipulator.ui.internal_storage.ProgressListener
 import com.magericx.storagemanipulator.ui.internal_storage.model.AddProgressInfo
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +29,7 @@ class FileIoUtil {
     }
 
     private val jobQueue: MutableList<StringBuilder> = mutableListOf()
+    private val trace = PerformanceHelper()
 
     //Using IO thread from coroutine
     suspend fun writeToInternalFile(
@@ -38,20 +40,20 @@ class FileIoUtil {
         withContext(Dispatchers.IO) {
             runInterruptible {
                 //TODO add logic to change jobQueue size dynamically according to selected unit + generate size
+                trace.start()
                 val progressManager = getProgressManager(isInternalDir)
                 var totalGenerateSize = sizeToGenerate
                 val directory = getDirectory(isInternalDir = isInternalDir)
-                val randomString = StringUtil.generateRandomString()
                 val listener = progressListener.get()
                 //first callback here to set the starting mark
                 listener?.updateProgress(addProgressInfo = AddProgressInfo(totalGenerateSize = sizeToGenerate))
+                createJobQueue()
                 while (isActive) {
                     if (!progressManager.getProgressStatus()) {
                         //nothing more to generate
-                        if (totalGenerateSize <= 0) break
-                        if (jobQueue.size <= 20) {
-                            jobQueue.add(randomString)
-                            continue
+                        if (totalGenerateSize <= 0) {
+                            trace.stop()
+                            break
                         }
                         //create new file if current file exceed sizeOfEachFileBytes
                         try {
@@ -67,6 +69,7 @@ class FileIoUtil {
                             }
                             updateProgressPercent(totalGenerateSize, sizeToGenerate, listener)
                         } catch (e: Exception) {
+                            trace.stop()
                             Log.e(TAG, "Encountered exception here $e")
                             listener?.updateProgress(
                                 progress = maxPercent,
@@ -83,6 +86,16 @@ class FileIoUtil {
             }
         }
 
+    }
+
+    private fun createJobQueue() {
+        val randomString = StringUtil.generateRandomString()
+        while (true) {
+            jobQueue.add(randomString)
+            if (jobQueue.size >= 20) {
+                break
+            }
+        }
     }
 
     private fun getDirectory(isInternalDir: Boolean = false): File {
