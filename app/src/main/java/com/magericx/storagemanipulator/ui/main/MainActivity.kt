@@ -27,12 +27,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         viewPager2 = findViewById<View>(R.id.viewpager2) as ViewPager2
         bottomNavigationView = findViewById<View>(R.id.nav_view) as BottomNavigationView
 
         addListeners()
         setupViewPager(viewPager2)
+
     }
 
     private fun setupViewPager(viewPager2: ViewPager2) {

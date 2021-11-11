@@ -21,7 +21,6 @@
         <item name="colorOnPrimaryContainer">@color/reply_beige</item>
         <item name="colorOutline">@color/reply_light_yellow</item>
 
-
-
     </style>
+
 </resources>
