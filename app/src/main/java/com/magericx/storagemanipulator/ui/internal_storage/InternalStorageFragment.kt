@@ -1,6 +1,7 @@
 package com.magericx.storagemanipulator.ui.internal_storage
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,6 +58,7 @@ class InternalStorageFragment : Fragment() {
         internalViewModel.getInternalStorageInfo(getSelectedUnit())
         //to update UI according to current info for device
         internalViewModel.internalStorageInfoObserver.observe(viewLifecycleOwner, { internalInfo ->
+            Log.d(TAG,"New progress percent is ${internalInfo.inUsedCapacityPercent}")
             updateProgressComponent(
                 internalInfo.inUsedCapacityPercent,
                 internalInfo.availableStorage,

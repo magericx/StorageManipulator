@@ -23,7 +23,7 @@ class FileIoUtil {
 
     companion object {
         private const val internalStorage = "storage_manipulator_files"
-        private const val sizeOfEachFileBytes = 500 * 1024 * 1024 //converted from MB to bytes
+        private const val sizeOfEachFileBytes = 1000 * 1024 * 1024 //converted from MB to bytes
         private const val TAG = "FileIoUtil"
         private const val maxPercent: Double = 100.0
     }
@@ -64,7 +64,7 @@ class FileIoUtil {
                                     directory,
                                     StringUtil.getNextFileName(getLastFileInDirectory(directory))
                                 )
-                            writeIntoFile(fileToFill).let {
+                            writeIntoFile(fileToFill, directory).let {
                                 totalGenerateSize -= it
                             }
                             updateProgressPercent(totalGenerateSize, sizeToGenerate, listener)
@@ -124,7 +124,7 @@ class FileIoUtil {
         return File(parentDirectory, childrenFileName)
     }
 
-    private fun writeIntoFile(file: File): Long {
+    private fun writeIntoFile(file: File, directory: File): Long {
         //return in bytes
         val sizeBefore = file.length()
         val fileWriter = BufferedWriter(FileWriter(file, true))
@@ -134,15 +134,15 @@ class FileIoUtil {
                 fileWriter.write(it.toString())
 //                fileWriter.append(it.toString())
             }
-            //jobQueue.clear()
-//            fileWriter.flush()
-            //Log.d(TAG, "Size before is ${sizeBefore} and after is ${file.length()}")
         } catch (e: IOException) {
             Log.e(TAG, "Exception here $e")
         } finally {
-            fileWriter.close()
+            fileWriter.apply{
+                close()
+            }
         }
-        return file.length() - sizeBefore
+        val sizeAfter = file.length()
+        return sizeAfter - sizeBefore
     }
 
     //get remaining to be added percentage first, deduct by 100 to get added percentage

@@ -35,7 +35,7 @@ class InternalStorageRepository : SizeRetrieval() {
             val blockSize: Long = stat.blockSizeLong
             val totalBlocks = stat.availableBlocksLong
             Log.d(TAG, "Retrieved getAvailCapacity here ${totalBlocks * blockSize}")
-            return totalBlocks * blockSize
+            totalBlocks * blockSize
         } catch (e: Exception) {
             Log.e(TAG, "getAvailCapacity: $e")
             0
