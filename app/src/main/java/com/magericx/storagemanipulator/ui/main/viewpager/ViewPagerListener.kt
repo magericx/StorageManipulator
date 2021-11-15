@@ -1,4 +1,4 @@
-package com.magericx.storagemanipulator.ui.main
+package com.magericx.storagemanipulator.ui.main.viewpager
 
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView

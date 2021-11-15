@@ -1,6 +1,7 @@
 package com.magericx.storagemanipulator.utility
 
 import android.util.Log
+import com.magericx.storagemanipulator.BuildConfig
 import com.magericx.storagemanipulator.StorageManipulatorApplication
 import com.magericx.storagemanipulator.handler.ExternalProgressManager
 import com.magericx.storagemanipulator.handler.InternalProgressManager
@@ -9,10 +10,7 @@ import com.magericx.storagemanipulator.handler.ProgressManager
 import com.magericx.storagemanipulator.performance.PerformanceHelper
 import com.magericx.storagemanipulator.ui.internal_storage.ProgressListener
 import com.magericx.storagemanipulator.ui.internal_storage.model.AddProgressInfo
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.runInterruptible
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
@@ -26,10 +24,11 @@ class FileIoUtil {
         private const val sizeOfEachFileBytes = 1000 * 1024 * 1024 //converted from MB to bytes
         private const val TAG = "FileIoUtil"
         private const val maxPercent: Double = 100.0
+        private const val numOfJobs = 20
     }
 
-    private val jobQueue: MutableList<StringBuilder> = mutableListOf()
-    private val trace = PerformanceHelper()
+    private lateinit var jobQueue: List<StringBuilder>
+    private val trace: PerformanceHelper? = if (BuildConfig.DEBUG) PerformanceHelper() else null
 
     //Using IO thread from coroutine
     suspend fun writeToInternalFile(
@@ -39,8 +38,7 @@ class FileIoUtil {
     ) {
         withContext(Dispatchers.IO) {
             runInterruptible {
-                //TODO add logic to change jobQueue size dynamically according to selected unit + generate size
-                trace.start()
+                trace?.start()
                 val progressManager = getProgressManager(isInternalDir)
                 var totalGenerateSize = sizeToGenerate
                 val directory = getDirectory(isInternalDir = isInternalDir)
@@ -52,7 +50,7 @@ class FileIoUtil {
                     if (!progressManager.getProgressStatus()) {
                         //nothing more to generate
                         if (totalGenerateSize <= 0) {
-                            trace.stop()
+                            trace?.stop()
                             break
                         }
                         //create new file if current file exceed sizeOfEachFileBytes
@@ -64,12 +62,12 @@ class FileIoUtil {
                                     directory,
                                     StringUtil.getNextFileName(getLastFileInDirectory(directory))
                                 )
-                            writeIntoFile(fileToFill, directory).let {
+                            writeIntoFile(fileToFill).let {
                                 totalGenerateSize -= it
                             }
                             updateProgressPercent(totalGenerateSize, sizeToGenerate, listener)
                         } catch (e: Exception) {
-                            trace.stop()
+                            trace?.stop()
                             Log.e(TAG, "Encountered exception here $e")
                             listener?.updateProgress(
                                 progress = maxPercent,
@@ -90,11 +88,8 @@ class FileIoUtil {
 
     private fun createJobQueue() {
         val randomString = StringUtil.generateRandomString()
-        while (true) {
-            jobQueue.add(randomString)
-            if (jobQueue.size >= 20) {
-                break
-            }
+        jobQueue = List(numOfJobs){
+            randomString
         }
     }
 
@@ -124,15 +119,13 @@ class FileIoUtil {
         return File(parentDirectory, childrenFileName)
     }
 
-    private fun writeIntoFile(file: File, directory: File): Long {
+    private fun writeIntoFile(file: File): Long {
         //return in bytes
         val sizeBefore = file.length()
-        val fileWriter = BufferedWriter(FileWriter(file, true))
+        val fileWriter = BufferedWriter(FileWriter(file, true),32768)
         try {
             jobQueue.forEach {
-                //TODO optimize writing logic
                 fileWriter.write(it.toString())
-//                fileWriter.append(it.toString())
             }
         } catch (e: IOException) {
             Log.e(TAG, "Exception here $e")
@@ -141,8 +134,7 @@ class FileIoUtil {
                 close()
             }
         }
-        val sizeAfter = file.length()
-        return sizeAfter - sizeBefore
+        return file.length() - sizeBefore
     }
 
     //get remaining to be added percentage first, deduct by 100 to get added percentage
@@ -177,7 +169,6 @@ class FileIoUtil {
     //only support deleting of entire directory for now
     fun deleteFiles(deleteAll: Boolean, isInternalDir: Boolean): Boolean {
         val directory = getDirectory(isInternalDir = isInternalDir)
-        Log.d(TAG, "deleteFiles: Directory is $directory")
         return try {
             if (isInternalDir) {
                 directory.deleteRecursively()

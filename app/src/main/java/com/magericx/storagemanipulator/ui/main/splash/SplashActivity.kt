@@ -1,8 +1,9 @@
-package com.magericx.storagemanipulator.ui.main
+package com.magericx.storagemanipulator.ui.main.splash
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.magericx.storagemanipulator.ui.main.MainActivity
 
 
 class SplashActivity : AppCompatActivity() {

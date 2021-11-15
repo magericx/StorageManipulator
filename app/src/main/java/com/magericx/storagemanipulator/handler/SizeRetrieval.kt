@@ -8,6 +8,7 @@ import java.lang.ref.WeakReference
 
 abstract class SizeRetrieval {
 
+
     companion object{
         private const val TAG = "SizeRetrieval"
     }

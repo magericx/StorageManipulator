@@ -12,7 +12,8 @@ import com.magericx.storagemanipulator.ui.dashboard.DashboardFragment
 import com.magericx.storagemanipulator.ui.dashboard.DashboardViewModel
 import com.magericx.storagemanipulator.ui.external_storage.ExternalStorageFragment
 import com.magericx.storagemanipulator.ui.internal_storage.InternalStorageFragment
-import com.magericx.storagemanipulator.ui.viewpager.ViewPagerAdapter
+import com.magericx.storagemanipulator.ui.main.viewpager.ViewPagerAdapter
+import com.magericx.storagemanipulator.ui.main.viewpager.ViewPagerListener
 import com.magericx.storagemanipulator.utility.ToastHelper.toast
 import java.lang.ref.WeakReference
 

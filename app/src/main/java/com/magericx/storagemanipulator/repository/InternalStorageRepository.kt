@@ -24,7 +24,7 @@ class InternalStorageRepository : SizeRetrieval() {
             Log.d(TAG, "Retrieved getTotalMaxCapacity here ${totalBlocks * blockSize}")
             totalBlocks * blockSize
         } catch (e: Exception) {
-            Log.e(TAG, "getTotalMaxCapacity: $e")
+            Log.e(TAG, "Error - getTotalMaxCapacity: $e")
             0
         }
     }
@@ -37,7 +37,7 @@ class InternalStorageRepository : SizeRetrieval() {
             Log.d(TAG, "Retrieved getAvailCapacity here ${totalBlocks * blockSize}")
             totalBlocks * blockSize
         } catch (e: Exception) {
-            Log.e(TAG, "getAvailCapacity: $e")
+            Log.e(TAG, "Error - getAvailCapacity: $e")
             0
         }
     }

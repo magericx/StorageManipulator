@@ -121,6 +121,7 @@ class InternalStorageViewModel : ViewModel() {
             }
         }
         currentJob?.invokeOnCompletion {
+            Log.d(TAG,"Finished currentJob here")
             if (it is CancellationException) {
                 Log.e(TAG, "Cancelled by user here")
                 _generateFilesInfo.value = GenerateFilesInfo(status = GenerateStatus.CANCELLED)

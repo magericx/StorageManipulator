@@ -1,4 +1,4 @@
-package com.magericx.storagemanipulator.ui.viewpager
+package com.magericx.storagemanipulator.ui.main.viewpager
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
