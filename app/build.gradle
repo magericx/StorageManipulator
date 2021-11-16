@@ -5,9 +5,17 @@ plugins {
 
 android {
 
+    compileSdkVersion 31
+
+    def isRunningOnTravis = System.getenv("CI") == "true"
+
     signingConfigs {
         release {
-            storeFile file(System.getenv("STORAGE_MANIPULATOR_KEYSTORE"))
+            if (isRunningOnTravis) {
+                storeFile file("../storage_key.jks")
+            } else {
+                storeFile file(System.getenv("STORAGE_MANIPULATOR_KEYSTORE"))
+            }
             keyAlias System.getenv("STORAGE_MANIPULATOR_KEY")
             storePassword System.getenv("STORAGE_MANIPULATOR_STOREPASSWORD")
             keyPassword System.getenv("STORAGE_MANIPULATOR_KEYPASSWORD")
@@ -22,7 +30,6 @@ android {
 
     }
 
-    compileSdkVersion 31
 
     defaultConfig {
         applicationId "com.magericx.storagemanipulator"

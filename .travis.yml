@@ -2,44 +2,39 @@ sudo: required
 language: android
 jdk: oraclejdk8
 dist: trusty
-
 android:
   licenses:
-    - 'android-sdk-preview-license-.+'
-    - 'android-sdk-license-.+'
-    - 'google-gdk-license-.+'
-
+    - android-sdk-preview-license-.+
+    - android-sdk-license-.+
+    - google-gdk-license-.+
   components:
     - tools
-    - build-tools-30.0.2
-    - android-30
+    - build-tools-31.0.0
+    - android-31
     - android-22
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
     - sys-img-armeabi-v7a-android-22
-
 before_install:
+  - openssl aes-256-cbc -K $encrypted_0a6a67ec3962_key -iv $encrypted_0a6a67ec3962_iv
+    -in storage_key.jks.enc -out storage_key.jks -d
   - chmod +x gradlew
   - yes | sdkmanager "platforms;android-30"
-
 before_script:
   - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
-
 script:
-  - ./gradlew clean build
-  - ./gradlew test
-  - ./gradlew build check
-
+  - "./gradlew clean build"
+  - "./gradlew test"
+  - "./gradlew build check"
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-
 cache:
   directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.android/build-cache
+    - "$HOME/.gradle/caches/"
+    - "$HOME/.gradle/wrapper/"
+    - "$HOME/.android/build-cache"
