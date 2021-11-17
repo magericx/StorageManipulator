@@ -4,37 +4,40 @@ jdk: oraclejdk8
 dist: trusty
 android:
   licenses:
-    - android-sdk-preview-license-.+
-    - android-sdk-license-.+
-    - google-gdk-license-.+
+  - android-sdk-preview-license-.+
+  - android-sdk-license-.+
+  - google-gdk-license-.+
   components:
-    - tools
-    - build-tools-31.0.0
-    - android-31
-    - android-22
-    - extra-google-google_play_services
-    - extra-google-m2repository
-    - extra-android-m2repository
-    - sys-img-armeabi-v7a-android-22
+  - tools
+  - build-tools-31.0.0
+  - android-31
+  - android-22
+  - extra-google-google_play_services
+  - extra-google-m2repository
+  - extra-android-m2repository
+  - sys-img-armeabi-v7a-android-22
 before_install:
-  - openssl aes-256-cbc -K $encrypted_0a6a67ec3962_key -iv $encrypted_0a6a67ec3962_iv
-    -in storage_key.jks.enc -out storage_key.jks -d
-  - chmod +x gradlew
-  - yes | sdkmanager "platforms;android-30"
+- chmod +x gradlew
+- yes | sdkmanager "platforms;android-30"
 before_script:
-  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
-  - emulator -avd test -no-audio -no-window &
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
+- openssl aes-256-cbc -k "$super_secret_password" -in storage_key.jks.enc -out storage_key.jks
+  -d
+- echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
+- emulator -avd test -no-audio -no-window &
+- android-wait-for-emulator
+- adb shell input keyevent 82 &
 script:
-  - "./gradlew clean build"
-  - "./gradlew test"
-  - "./gradlew build check"
+- "./gradlew clean build"
+- "./gradlew test"
+- "./gradlew build check"
 before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-    - "$HOME/.gradle/caches/"
-    - "$HOME/.gradle/wrapper/"
-    - "$HOME/.android/build-cache"
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/.android/build-cache"
+env:
+  global:
+  - secure: vfBgy28hSynCfNP3AJTp5D3Efb8kSD3WDrLInPVWfOcaAfgZVaNC/E2vNa3JnLF0xVFKnzJn9rnGjzcqqRDLCfHLmmoI1Bs1jL2eWhogwCRBXcFRSwdaggTWtYkDlPvBp81kMBu8phjOuYM1DJp5h658jVmtKiZuT9ELcQx8lF+s9/3uz2cAOLWjbcRkR0yhl86U62iLKn+PkO7Ihp4EAdmQD0g3UT1ER5cGukIJH0FzVWXOp9BB9vHW8vIm4nnEpWQaAJwlXxaBPRoo/bESlAiYUi7eNh3GpMgQOlLPcMtD9nTQ9EcV1L2A7uygepC2G9e5cGngTvDodR/S02OqHuMY13weWHUdmA1Ttk3dfZdfElwcKIHIPsITo8LLXXQXWKmKVhAgRc73ugrhPFk2sZoIzxyOMb+5dntm5sncV1Sl0OWM4X2+D8O/ATgOgH0p8qZgm6k04e85Vd6Y+B3fd24u5vDHKs9qSuiM8Wf3gYObDHoIXYCi5wmlsbgWq5pNxypqy0NkaRwjV/JTYHOG2FCfXMYMnr9Icb1DVm3bJPpBbJbsydx6EMmdk4t7VPLyOPn1xBEolTsUmSh9Thjvwoec9OYpOCW+78urL2OqA+gbGTdLhfSyezLLDG5ftIdkm1dbMwZKqryLG9hHR4IPt7dsJ3Db36a4njT5qwFJhEI=
