@@ -49,6 +49,7 @@ object SizeUtil {
         }
     }
 
+    //convert respective unit to bytes
     fun getCapacityToBytes(size: Double, unit: UnitStatus): Long {
         return when (unit) {
             UnitStatus.B -> size.toLong()
