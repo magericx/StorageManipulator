@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun addListeners() {
+        viewPager2.isUserInputEnabled = false
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_dashboard -> viewPager2.setCurrentItem(0, false)

@@ -1,6 +1,7 @@
 package com.magericx.storagemanipulator.utility
 
 import com.magericx.storagemanipulator.ui.internal_storage.UnitStatus
+import java.lang.NumberFormatException
 
 
 object SizeUtil {
@@ -19,7 +20,11 @@ object SizeUtil {
     }
 
     fun roundTo1Decimal(value: Double): Double {
-        return String.format("%.1f", value).toDouble()
+        return try {
+            String.format("%.1f", value).toDouble()
+        } catch (e: NumberFormatException) {
+            value
+        }
     }
 
     private fun removeDecimalPoint(value: Double): Double {
